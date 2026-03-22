@@ -1,0 +1,2 @@
+revenue_current,revenue_1m_ago,revenue_3m_ago,expenses_current,expenses_3m_ago,cash_balance,top_client_revenue,accounts_receivable,num_employees,gross_margin_current,gross_margin_3m_ago
+35000,34000,33000,28000,27000,86800,18200,56000,8,0.38,0.41
