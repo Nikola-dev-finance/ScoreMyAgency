@@ -116,7 +116,7 @@ if uploaded_file and business_name:
 
             finally:
                 os.unlink(tmp_csv_path)
-                if os.path.exists(tmp_pdf_path):
+                if 'tmp_pdf_path' in locals() and os.path.exists(tmp_pdf_path):
                     os.unlink(tmp_pdf_path)
 
 elif uploaded_file and not business_name:
