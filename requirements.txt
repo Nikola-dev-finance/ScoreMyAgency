@@ -1,5 +1,7 @@
-anthropic
-pandas
-reportlab
-streamlit
-python-dotenv
+anthropic==0.86.0
+pandas==2.3.3
+reportlab==4.4.10
+streamlit==1.43.0
+python-dotenv==1.2.2
+openpyxl==3.1.5
+altair==5.5.0
