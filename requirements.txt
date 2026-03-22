@@ -1,0 +1,5 @@
+anthropic
+pandas
+reportlab
+streamlit
+python-dotenv
