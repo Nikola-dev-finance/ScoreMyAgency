@@ -1,10 +1,18 @@
 import pandas as pd
-import anthropic
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
-client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+
+def get_api_key():
+    try:
+        import streamlit as st
+        return st.secrets["ANTHROPIC_API_KEY"]
+    except Exception:
+        return os.getenv("ANTHROPIC_API_KEY")
+
+import anthropic
+client = anthropic.Anthropic(api_key=get_api_key())
 
 def parse_csv(filepath):
     df = pd.read_csv(filepath)
