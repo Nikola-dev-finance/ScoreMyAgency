@@ -307,7 +307,7 @@ def calculate_composite_score(ratios):
 
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable, KeepTogether
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import mm
 
@@ -376,98 +376,254 @@ Write the risk summary, 3 findings, and 2 actions."""
 
     return {"risk_summary": risk_summary, "findings": findings, "actions": actions}
 
-def generate_pdf(business_name, score, scores, ratios, findings=None, actions=None, output_path="report.pdf"):
-    doc = SimpleDocTemplate(output_path, pagesize=A4,
-                           rightMargin=20*mm, leftMargin=20*mm,
-                           topMargin=20*mm, bottomMargin=20*mm)
-    styles = getSampleStyleSheet()
-    story = []
+def generate_pdf(business_name, score, scores, ratios, findings=None, actions=None, risk_summary=None, output_path="report.pdf"):
+    from datetime import date
 
-    title_style = ParagraphStyle('title', fontSize=24, fontName='Helvetica-Bold',
-                                  spaceAfter=6, textColor=colors.HexColor('#1A1A2E'))
-    sub_style = ParagraphStyle('sub', fontSize=11, fontName='Helvetica',
-                                spaceAfter=20, textColor=colors.HexColor('#666666'))
-    section_style = ParagraphStyle('section', fontSize=13, fontName='Helvetica-Bold',
-                                    spaceAfter=8, textColor=colors.HexColor('#2C3E7A'),
-                                    spaceBefore=16)
-    body_style = ParagraphStyle('body', fontSize=10, fontName='Helvetica',
-                                 spaceAfter=6, textColor=colors.HexColor('#333333'),
-                                 leading=15)
+    PAGE_W, _ = A4
+    MARGIN    = 15 * mm
+    CW        = PAGE_W - 2 * MARGIN  # usable content width = 180mm
 
-    story.append(Paragraph("ScoreMyAgency — Financial Health Report", title_style))
-    story.append(Paragraph(business_name, sub_style))
+    # Palette
+    NAVY      = colors.HexColor('#1a2332')
+    GREEN     = colors.HexColor('#22c55e')
+    AMBER     = colors.HexColor('#f59e0b')
+    RED       = colors.HexColor('#ef4444')
+    SLATE     = colors.HexColor('#f1f5f9')
+    RULE      = colors.HexColor('#e2e8f0')
+    MUTED     = colors.HexColor('#6b7280')
 
     if score >= 70:
-        score_color = colors.HexColor('#2E7D32')
-        verdict = "Healthy"
+        score_hex, verdict = '#22c55e', 'Healthy'
     elif score >= 40:
-        score_color = colors.HexColor('#E65100')
-        verdict = "Struggling"
+        score_hex, verdict = '#f59e0b', 'Struggling'
     else:
-        score_color = colors.HexColor('#C62828')
-        verdict = "Critical"
+        score_hex, verdict = '#ef4444', 'Critical'
 
-    score_data = [[f"{score} / 100", verdict]]
-    score_table = Table(score_data, colWidths=[80*mm, 80*mm])
-    score_table.setStyle(TableStyle([
-        ('FONTNAME', (0,0), (0,0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0,0), (0,0), 36),
-        ('TEXTCOLOR', (0,0), (0,0), score_color),
-        ('FONTNAME', (1,0), (1,0), 'Helvetica-Bold'),
-        ('FONTSIZE', (1,0), (1,0), 18),
-        ('TEXTCOLOR', (1,0), (1,0), score_color),
-        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 12),
-        ('TOPPADDING', (0,0), (-1,-1), 12),
-        ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#F5F7FF')),
+    def ratio_hex(s):
+        if s >= 7: return '#22c55e'
+        if s >= 4: return '#f59e0b'
+        return '#ef4444'
+
+    doc = SimpleDocTemplate(
+        output_path, pagesize=A4,
+        rightMargin=MARGIN, leftMargin=MARGIN,
+        topMargin=MARGIN, bottomMargin=MARGIN,
+    )
+
+    # Base styles
+    normal   = ParagraphStyle('pdf_normal',   fontSize=9,  fontName='Helvetica',
+                               textColor=colors.HexColor('#1f2937'), leading=13)
+    bold9    = ParagraphStyle('pdf_bold9',    fontSize=9,  fontName='Helvetica-Bold',
+                               textColor=colors.HexColor('#1f2937'), leading=13)
+    section  = ParagraphStyle('pdf_section',  fontSize=10, fontName='Helvetica-Bold',
+                               textColor=NAVY, spaceBefore=8, spaceAfter=3)
+    white9   = ParagraphStyle('pdf_white9',   fontSize=9,  fontName='Helvetica',
+                               textColor=colors.white, leading=13)
+    footer_s = ParagraphStyle('pdf_footer',   fontSize=7,  fontName='Helvetica',
+                               textColor=MUTED, alignment=1)
+    action_n = ParagraphStyle('pdf_action_n', fontSize=12, fontName='Helvetica-Bold',
+                               textColor=NAVY, alignment=1, leading=14)
+
+    today = date.today().strftime("%d %B %Y")
+    story = []
+
+    # -----------------------------------------------------------------------
+    # 1. HEADER BAR
+    # -----------------------------------------------------------------------
+    hdr = Table(
+        [[Paragraph('<font color="white" size="13"><b>ScoreMyAgency</b></font>', white9),
+          Paragraph(f'<font color="#94a3b8" size="8">Financial Health Report</font>', white9)]],
+        colWidths=[CW * 0.55, CW * 0.45],
+    )
+    hdr.setStyle(TableStyle([
+        ('BACKGROUND',    (0,0), (-1,-1), NAVY),
+        ('TOPPADDING',    (0,0), (-1,-1), 9),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 9),
+        ('LEFTPADDING',   (0,0), (0,0),   12),
+        ('RIGHTPADDING',  (-1,0), (-1,0), 12),
+        ('VALIGN',        (0,0), (-1,-1), 'MIDDLE'),
+        ('ALIGN',         (1,0), (1,0),   'RIGHT'),
     ]))
-    story.append(score_table)
-    story.append(Spacer(1, 12))
+    story.append(hdr)
 
-    story.append(Paragraph("Ratio Breakdown", section_style))
+    sub = Table(
+        [[Paragraph(f'<b>{business_name}</b>', bold9),
+          Paragraph(f'<font color="#6b7280" size="8">Generated {today}</font>', normal)]],
+        colWidths=[CW * 0.55, CW * 0.45],
+    )
+    sub.setStyle(TableStyle([
+        ('BACKGROUND',    (0,0), (-1,-1), SLATE),
+        ('TOPPADDING',    (0,0), (-1,-1), 5),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 5),
+        ('LEFTPADDING',   (0,0), (0,0),   12),
+        ('RIGHTPADDING',  (-1,0), (-1,0), 12),
+        ('VALIGN',        (0,0), (-1,-1), 'MIDDLE'),
+        ('ALIGN',         (1,0), (1,0),   'RIGHT'),
+    ]))
+    story.append(sub)
+    story.append(Spacer(1, 8))
+
+    # -----------------------------------------------------------------------
+    # 2. SCORE + RISK SUMMARY
+    # -----------------------------------------------------------------------
+    diag = f'<i>{risk_summary}</i>' if risk_summary else ''
+    score_cell = Paragraph(
+        f'<font size="40" color="{score_hex}"><b>{score}</b></font>'
+        f'<font size="13" color="{score_hex}"> /100</font>',
+        normal,
+    )
+    verdict_cell = Paragraph(
+        f'<font size="18" color="{score_hex}"><b>{verdict}</b></font>'
+        + (f'<br/><br/><font size="8.5" color="#374151">{diag}</font>' if diag else ''),
+        normal,
+    )
+    score_tbl = Table([[score_cell, verdict_cell]], colWidths=[CW * 0.25, CW * 0.75])
+    score_tbl.setStyle(TableStyle([
+        ('BACKGROUND',    (0,0), (-1,-1), colors.HexColor('#f8fafc')),
+        ('TOPPADDING',    (0,0), (-1,-1), 11),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 11),
+        ('LEFTPADDING',   (0,0), (0,0),   12),
+        ('LEFTPADDING',   (1,0), (1,0),   10),
+        ('RIGHTPADDING',  (-1,0), (-1,0), 12),
+        ('VALIGN',        (0,0), (-1,-1), 'MIDDLE'),
+        ('LINEBELOW',     (0,0), (-1,-1), 2, colors.HexColor(score_hex)),
+    ]))
+    story.append(score_tbl)
+    story.append(Spacer(1, 10))
+
+    # -----------------------------------------------------------------------
+    # 3. RATIO TABLE  (dot | name | score | value | benchmark)
+    # -----------------------------------------------------------------------
+    story.append(Paragraph("Ratio Breakdown", section))
+
+    benchmarks = {
+        "revenue_concentration": "Under 25%",
+        "dso":                   "Under 30 days",
+        "cash_runway":           "3–6 months",
+        "gross_margin":          "50–70%",
+        "exp_vs_rev":            "Expenses \u2264 Revenue growth",
+        "rev_per_employee":      "\u20ac70k\u2013\u20ac120k / year",
+    }
     ratio_labels = {
         "revenue_concentration": "Revenue Concentration",
-        "dso": "Days Sales Outstanding",
-        "cash_runway": "Cash Runway",
-        "gross_margin": "Gross Margin",
-        "exp_vs_rev": "Expense vs Revenue Growth",
-        "rev_per_employee": "Revenue per Employee",
+        "dso":                   "Days Sales Outstanding",
+        "cash_runway":           "Cash Runway",
+        "gross_margin":          "Gross Margin",
+        "exp_vs_rev":            "Expense vs Revenue Growth",
+        "rev_per_employee":      "Revenue per Employee",
     }
     raw_values = {
         "revenue_concentration": f"{ratios['revenue_concentration']*100:.1f}%",
-        "dso": f"{ratios['dso']:.1f} days",
-        "cash_runway": f"{ratios['cash_runway']:.1f} months",
-        "gross_margin": f"{ratios['gross_margin_current']*100:.1f}%",
-        "exp_vs_rev": f"{ratios['exp_vs_rev']*100:.1f}%",
-        "rev_per_employee": f"EUR {ratios['rev_per_employee']:,.0f}",
+        "dso":                   f"{ratios['dso']:.1f} days",
+        "cash_runway":           f"{ratios['cash_runway']:.1f} months",
+        "gross_margin":          f"{ratios['gross_margin_current']*100:.1f}%",
+        "exp_vs_rev":            f"{ratios['exp_vs_rev']*100:.1f}%",
+        "rev_per_employee":      f"\u20ac{ratios['rev_per_employee']:,.0f}",
     }
-    ratio_data = [["Ratio", "Score", "Raw Value"]]
-    for key, label in ratio_labels.items():
-        ratio_data.append([label, f"{scores[key]}/10", raw_values[key]])
 
-    ratio_table = Table(ratio_data, colWidths=[90*mm, 30*mm, 50*mm])
-    ratio_table.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#2C3E7A')),
-        ('TEXTCOLOR', (0,0), (-1,0), colors.white),
-        ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0,0), (-1,-1), 10),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, colors.HexColor('#F5F7FF')]),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor('#CCCCCC')),
-        ('TOPPADDING', (0,0), (-1,-1), 7),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 7),
-        ('LEFTPADDING', (0,0), (-1,-1), 8),
-    ]))
-    story.append(ratio_table)
+    DOT_W = 6*mm;  NAME_W = 64*mm;  SCR_W = 18*mm;  VAL_W = 34*mm
+    BMK_W = CW - DOT_W - NAME_W - SCR_W - VAL_W
 
-    story.append(Paragraph("Key Findings", section_style))
+    th = ParagraphStyle('pdf_th', fontSize=8, fontName='Helvetica-Bold', textColor=colors.white, leading=11)
+    td = ParagraphStyle('pdf_td', fontSize=8, fontName='Helvetica',      textColor=colors.HexColor('#1f2937'), leading=11)
+    tm = ParagraphStyle('pdf_tm', fontSize=8, fontName='Helvetica',      textColor=MUTED, leading=11)
+
+    rows = [[Paragraph('', th), Paragraph('Ratio', th), Paragraph('Score', th),
+             Paragraph('Your Value', th), Paragraph('Benchmark', th)]]
+    cmds = [
+        ('BACKGROUND',    (0,0), (-1,0), NAVY),
+        ('TOPPADDING',    (0,0), (-1,-1), 5),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 5),
+        ('LEFTPADDING',   (0,0), (-1,-1), 5),
+        ('RIGHTPADDING',  (0,0), (-1,-1), 5),
+        ('VALIGN',        (0,0), (-1,-1), 'MIDDLE'),
+        ('GRID',          (0,0), (-1,-1), 0.25, RULE),
+    ]
+    for i, (key, label) in enumerate(ratio_labels.items(), start=1):
+        s    = scores[key]
+        shex = ratio_hex(s)
+        rows.append([
+            '',   # background-colored cell used as indicator dot
+            Paragraph(label, td),
+            Paragraph(f'<font color="{shex}"><b>{s}/10</b></font>', td),
+            Paragraph(raw_values[key], td),
+            Paragraph(benchmarks[key], tm),
+        ])
+        cmds.append(('BACKGROUND', (0,i), (0,i), colors.HexColor(shex)))
+        if i % 2 == 0:
+            cmds.append(('BACKGROUND', (1,i), (-1,i), colors.HexColor('#f8f9fa')))
+
+    ratio_tbl = Table(rows, colWidths=[DOT_W, NAME_W, SCR_W, VAL_W, BMK_W])
+    ratio_tbl.setStyle(TableStyle(cmds))
+    story.append(ratio_tbl)
+    story.append(Spacer(1, 10))
+
+    # -----------------------------------------------------------------------
+    # 4. FINDINGS  (colored left-border sidebar)
+    # -----------------------------------------------------------------------
+    story.append(Paragraph("Key Findings", section))
     findings = findings or ["No findings generated."]
-    for f in findings:
-        story.append(Paragraph(f"• {f}", body_style))
+    finding_colors = ['#ef4444', '#f59e0b', '#6b7280']
 
-    story.append(Paragraph("Recommended Actions", section_style))
+    finding_rows = []
+    for i, text in enumerate(findings):
+        fc   = finding_colors[i] if i < len(finding_colors) else '#6b7280'
+        cell = Paragraph(f'<b>{i+1}.</b>  {text}', normal)
+        row  = Table([['', cell]], colWidths=[4*mm, CW - 4*mm])
+        row.setStyle(TableStyle([
+            ('BACKGROUND',    (0,0), (0,0),   colors.HexColor(fc)),
+            ('BACKGROUND',    (1,0), (1,0),   colors.HexColor('#fafafa')),
+            ('TOPPADDING',    (0,0), (-1,-1), 6),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 6),
+            ('LEFTPADDING',   (0,0), (0,0),   0),
+            ('RIGHTPADDING',  (0,0), (0,0),   0),
+            ('LEFTPADDING',   (1,0), (1,0),   8),
+            ('RIGHTPADDING',  (1,0), (1,0),   8),
+            ('VALIGN',        (0,0), (-1,-1), 'TOP'),
+            ('LINEBELOW',     (0,0), (-1,-1), 0.25, RULE),
+        ]))
+        finding_rows.append(row)
+
+    story.append(KeepTogether(finding_rows))
+    story.append(Spacer(1, 10))
+
+    # -----------------------------------------------------------------------
+    # 5. ACTIONS  (numbered, light-blue box)
+    # -----------------------------------------------------------------------
+    story.append(Paragraph("Recommended Actions", section))
     actions = actions or ["No actions generated."]
-    for a in actions:
-        story.append(Paragraph(f"-> {a}", body_style))
+
+    for i, text in enumerate(actions):
+        act = Table(
+            [[Paragraph(str(i + 1), action_n), Paragraph(text, normal)]],
+            colWidths=[10*mm, CW - 10*mm],
+        )
+        act.setStyle(TableStyle([
+            ('BACKGROUND',    (0,0), (-1,-1), colors.HexColor('#eff6ff')),
+            ('TOPPADDING',    (0,0), (-1,-1), 8),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 8),
+            ('LEFTPADDING',   (0,0), (0,0),   0),
+            ('RIGHTPADDING',  (0,0), (0,0),   0),
+            ('LEFTPADDING',   (1,0), (1,0),   10),
+            ('RIGHTPADDING',  (1,0), (1,0),   10),
+            ('VALIGN',        (0,0), (-1,-1), 'MIDDLE'),
+            ('LINEBEFORE',    (0,0), (0,-1),  3,    NAVY),
+            ('LINEAFTER',     (0,0), (0,-1),  0.5,  RULE),
+        ]))
+        story.append(act)
+        story.append(Spacer(1, 4))
+
+    # -----------------------------------------------------------------------
+    # 6. FOOTER
+    # -----------------------------------------------------------------------
+    story.append(Spacer(1, 8))
+    story.append(HRFlowable(width=CW, thickness=0.5, color=RULE))
+    story.append(Spacer(1, 4))
+    story.append(Paragraph(
+        f'Generated by ScoreMyAgency.com \u00b7 {today} \u00b7 '
+        f'<font color="#9ca3af">CONFIDENTIAL</font>',
+        footer_s,
+    ))
 
     doc.build(story)
     print(f"Report saved to {output_path}")
@@ -494,4 +650,4 @@ if __name__ == "__main__":
     for a in ai["actions"]:
         print(f"  - {a}")
 
-    generate_pdf("Mosaic Digital", score, scores, ratios, ai["findings"], ai["actions"])
+    generate_pdf("Mosaic Digital", score, scores, ratios, ai["findings"], ai["actions"], risk_summary=ai["risk_summary"])

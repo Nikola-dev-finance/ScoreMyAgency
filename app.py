@@ -91,7 +91,7 @@ def run_and_display(business_name, data):
     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_pdf:
         tmp_pdf_path = tmp_pdf.name
     try:
-        generate_pdf(business_name, score, scores, ratios, findings, actions, output_path=tmp_pdf_path)
+        generate_pdf(business_name, score, scores, ratios, findings, actions, risk_summary=risk_summary, output_path=tmp_pdf_path)
         with open(tmp_pdf_path, "rb") as f:
             pdf_bytes = f.read()
         st.download_button(
