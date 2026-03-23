@@ -16,7 +16,7 @@ client = anthropic.Anthropic(api_key=get_api_key())
 
 def parse_csv(filepath):
     df = pd.read_csv(filepath)
-    
+
     data = {
         "revenue_current": float(df["revenue_current"][0]),
         "revenue_1m_ago": float(df["revenue_1m_ago"][0]),
@@ -31,6 +31,191 @@ def parse_csv(filepath):
         "gross_margin_3m_ago": float(df["gross_margin_3m_ago"][0]),
     }
     return data
+
+
+def _xero_parse_number(raw):
+    """Convert a Xero-formatted cell to float.
+
+    Handles:
+      - commas as thousands separators: "12,345.67" -> 12345.67
+      - parentheses for negatives:      "(1,234.56)" -> -1234.56
+      - dashes / blanks for zero:       "-" or "" -> 0.0
+    """
+    if raw is None:
+        return 0.0
+    s = str(raw).strip()
+    if s in ("", "-", "—"):
+        return 0.0
+    negative = s.startswith("(") and s.endswith(")")
+    if negative:
+        s = s[1:-1]
+    try:
+        value = float(s.replace(",", ""))
+        return -value if negative else value
+    except ValueError:
+        return 0.0
+
+
+def parse_xero_csv(filepath):
+    """Parse a real Xero Profit & Loss CSV export.
+
+    Xero P&L structure
+    ------------------
+    Row 0-N  : metadata (company name, report title, date range)
+    Header   : first row where ≥2 cells match "Mon YYYY" (e.g. "Jan 2026")
+    Data rows: label in col 0, values in month columns
+
+    Returns the same dict shape as parse_csv().
+    Fields that cannot be derived from a P&L (cash balance, top client
+    revenue, accounts receivable, num employees) are returned as None
+    so the caller can prompt the user to supply them manually.
+    """
+    import csv
+    import re
+    from datetime import datetime
+
+    MONTH_RE = re.compile(
+        r"^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{4}$",
+        re.IGNORECASE,
+    )
+
+    with open(filepath, newline="", encoding="utf-8-sig") as f:
+        rows = list(csv.reader(f))
+
+    # ------------------------------------------------------------------
+    # 1. Locate the header row and all month columns
+    # ------------------------------------------------------------------
+    header_idx = None
+    month_cols = []  # [(col_index, datetime), ...]
+
+    for i, row in enumerate(rows):
+        found = []
+        for j, cell in enumerate(row):
+            if MONTH_RE.match(cell.strip()):
+                try:
+                    found.append((j, datetime.strptime(cell.strip(), "%b %Y")))
+                except ValueError:
+                    pass
+        if len(found) >= 2:
+            header_idx = i
+            month_cols = found
+            break
+
+    if header_idx is None:
+        raise ValueError(
+            "Could not find month columns in the CSV. "
+            "Expected headers like 'Jan 2026', 'Feb 2026'."
+        )
+
+    # Sort chronologically; keep the last 3
+    month_cols.sort(key=lambda x: x[1])
+    last3 = month_cols[-3:]
+
+    col_current = last3[-1][0]
+    col_1m_ago  = last3[-2][0] if len(last3) >= 2 else None
+    col_3m_ago  = last3[0][0]
+
+    # ------------------------------------------------------------------
+    # 2. Index data rows by their normalised label
+    # ------------------------------------------------------------------
+    label_index = {}  # normalised_label -> row list
+    for row in rows[header_idx + 1:]:
+        if not row:
+            continue
+        label = row[0].strip().lower()
+        if label and label not in label_index:
+            label_index[label] = row
+
+    def _get(keywords, col):
+        """Return the numeric value for the first matching keyword at col."""
+        if col is None:
+            return None
+        for kw in keywords:
+            row = label_index.get(kw.lower())
+            if row is not None and col < len(row):
+                return _xero_parse_number(row[col])
+        return None
+
+    # ------------------------------------------------------------------
+    # 3. Extract revenue
+    # Xero typically totals income as "Total [Income/Revenue/Trading Income]"
+    # ------------------------------------------------------------------
+    REVENUE_KW = [
+        "total revenue",
+        "total operating revenue",
+        "total income",
+        "total trading income",
+        "revenue",
+        "income",
+    ]
+    rev_current = _get(REVENUE_KW, col_current)
+    rev_1m_ago  = _get(REVENUE_KW, col_1m_ago)
+    rev_3m_ago  = _get(REVENUE_KW, col_3m_ago)
+
+    # ------------------------------------------------------------------
+    # 4. Extract expenses
+    # Total expenses = Cost of Sales + Operating Expenses.
+    # Try a single "Total Expenses" row first; fall back to summing parts.
+    # ------------------------------------------------------------------
+    COGS_KW = [
+        "total cost of sales",
+        "cost of sales",
+        "total direct costs",
+        "direct costs",
+        "total cost of goods sold",
+        "cost of goods sold",
+    ]
+    OPEX_KW = [
+        "total operating expenses",
+        "operating expenses",
+        "total overhead expenses",
+        "overhead expenses",
+        "total expenses",
+        "expenses",
+    ]
+
+    def _total_expenses(col):
+        single = _get(["total expenses", "total costs"], col)
+        if single is not None:
+            return single
+        cogs = _get(COGS_KW, col) or 0.0
+        opex = _get(OPEX_KW, col) or 0.0
+        return (cogs + opex) if (cogs or opex) else None
+
+    exp_current = _total_expenses(col_current)
+    exp_3m_ago  = _total_expenses(col_3m_ago)
+
+    # ------------------------------------------------------------------
+    # 5. Gross margin = Gross Profit / Revenue
+    # ------------------------------------------------------------------
+    GP_KW = ["gross profit", "total gross profit"]
+
+    def _gross_margin(col):
+        gp  = _get(GP_KW, col)
+        rev = _get(REVENUE_KW, col)
+        if gp is not None and rev:
+            return gp / rev
+        return None
+
+    gm_current = _gross_margin(col_current)
+    gm_3m_ago  = _gross_margin(col_3m_ago)
+
+    # ------------------------------------------------------------------
+    # 6. Return in parse_csv() dict format
+    # ------------------------------------------------------------------
+    return {
+        "revenue_current":      rev_current,
+        "revenue_1m_ago":       rev_1m_ago,
+        "revenue_3m_ago":       rev_3m_ago,
+        "expenses_current":     exp_current,
+        "expenses_3m_ago":      exp_3m_ago,
+        "cash_balance":         None,
+        "top_client_revenue":   None,
+        "accounts_receivable":  None,
+        "num_employees":        None,
+        "gross_margin_current": gm_current,
+        "gross_margin_3m_ago":  gm_3m_ago,
+    }
 def calculate_ratios(data):
     revenue_concentration = data["top_client_revenue"] / data["revenue_current"]
     
