@@ -312,11 +312,34 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import mm
 
 def get_ai_interpretation(business_name, score, scores, ratios):
-    prompt = f"""You are a financial advisor giving plain-language feedback to a digital agency owner who has no accounting background.
+    system = """You are a financial advisor specialising in digital agencies. You give plain-language feedback to agency owners who have no accounting background.
 
-Here is their Financial Health Score report:
+Agency benchmarks you must use when interpreting the numbers:
+- Gross Margin: weak = below 50%, healthy = 50–70%, strong = 70%+
+- Days Sales Outstanding (DSO): healthy = under 30 days, concerning = 30–45 days, dangerous = 45+ days
+- Revenue Concentration: safe = under 25%, risky = 25–40%, dangerous = 40%+
+- Cash Runway: critical = under 1 month, thin = 1–3 months, healthy = 3–6 months, strong = 6+ months
+- Revenue per Employee: underperforming = below €60,000/year, healthy = €70,000–€120,000/year, strong = above €120,000/year
+- Expense vs Revenue Growth: expenses growing faster than revenue is a warning sign at any level
 
-Business: {business_name}
+Output rules:
+- No jargon. Write like a knowledgeable friend, not an accountant.
+- Be specific — reference their actual numbers and compare them to the benchmarks above.
+- Be honest — if something is dangerous, say so clearly.
+- Focus on the lowest-scoring ratios first.
+- Each finding must be under 100 words.
+- Each action must be under 60 words.
+
+Format your response exactly like this, with no extra text before or after:
+RISK SUMMARY: [one sentence — the single most important takeaway, like a doctor's top-line diagnosis]
+FINDING 1: [what the number shows, how it compares to the benchmark, why it matters, what happens if ignored]
+FINDING 2: [what the number shows, how it compares to the benchmark, why it matters, what happens if ignored]
+FINDING 3: [what the number shows, how it compares to the benchmark, why it matters, what happens if ignored]
+ACTION 1: [specific, achievable action with a clear deadline]
+ACTION 2: [specific, achievable action with a clear deadline]"""
+
+    user_message = f"""Here is the Financial Health Score report for {business_name}:
+
 Composite Score: {score}/100
 
 Ratio scores:
@@ -327,42 +350,31 @@ Ratio scores:
 - Expense vs Revenue Growth: {scores['exp_vs_rev']}/10 (expense growth minus revenue growth = {ratios['exp_vs_rev']*100:.1f}%)
 - Revenue per Employee: {scores['rev_per_employee']}/10 (€{ratios['rev_per_employee']:,.0f} per person annually)
 
-Write exactly 3 key findings and exactly 2 recommended actions.
-
-Format your response exactly like this:
-FINDING 1: [what the number shows, why it matters for their agency, what happens if ignored]
-FINDING 2: [what the number shows, why it matters for their agency, what happens if ignored]
-FINDING 3: [what the number shows, why it matters for their agency, what happens if ignored]
-ACTION 1: [specific, achievable action with a clear deadline]
-ACTION 2: [specific, achievable action with a clear deadline]
-
-Rules:
-- No jargon. Write like a knowledgeable friend, not an accountant.
-- Be specific — reference their actual numbers, not generic advice.
-- Be honest — if something is dangerous, say so clearly.
-- Each finding under 60 words.
-- Each action under 40 words.
-- Focus on the lowest-scoring ratios first."""
+Write the risk summary, 3 findings, and 2 actions."""
 
     message = client.messages.create(
         model="claude-opus-4-5",
-        max_tokens=1000,
-        messages=[{"role": "user", "content": prompt}]
+        max_tokens=1500,
+        system=system,
+        messages=[{"role": "user", "content": user_message}]
     )
-    
+
     response = message.content[0].text
-    
+
+    risk_summary = ""
     findings = []
     actions = []
-    
+
     for line in response.strip().split('\n'):
         line = line.strip()
-        if line.startswith('FINDING'):
+        if line.startswith('RISK SUMMARY:'):
+            risk_summary = line.split(':', 1)[1].strip()
+        elif line.startswith('FINDING'):
             findings.append(line.split(':', 1)[1].strip())
         elif line.startswith('ACTION'):
             actions.append(line.split(':', 1)[1].strip())
-    
-    return findings, actions
+
+    return {"risk_summary": risk_summary, "findings": findings, "actions": actions}
 
 def generate_pdf(business_name, score, scores, ratios, findings=None, actions=None, output_path="report.pdf"):
     doc = SimpleDocTemplate(output_path, pagesize=A4,
@@ -472,13 +484,14 @@ if __name__ == "__main__":
         print(f"  {k}: {v}/10")
     
     print(f"\nGenerating AI interpretation...")
-    findings, actions = get_ai_interpretation("Mosaic Digital", score, scores, ratios)
-    
+    ai = get_ai_interpretation("Mosaic Digital", score, scores, ratios)
+
+    print(f"\nRisk Summary: {ai['risk_summary']}")
     print(f"\nFindings:")
-    for f in findings:
+    for f in ai["findings"]:
         print(f"  - {f}")
     print(f"\nActions:")
-    for a in actions:
+    for a in ai["actions"]:
         print(f"  - {a}")
-    
-    generate_pdf("Mosaic Digital", score, scores, ratios, findings, actions)
+
+    generate_pdf("Mosaic Digital", score, scores, ratios, ai["findings"], ai["actions"])

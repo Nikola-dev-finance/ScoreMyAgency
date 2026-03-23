@@ -16,7 +16,10 @@ def run_and_display(business_name, data):
     score, scores = calculate_composite_score(ratios)
 
     with st.spinner("Generating AI interpretation..."):
-        findings, actions = get_ai_interpretation(business_name, score, scores, ratios)
+        ai = get_ai_interpretation(business_name, score, scores, ratios)
+        risk_summary = ai["risk_summary"]
+        findings     = ai["findings"]
+        actions      = ai["actions"]
 
     # --- Score display ---
     if score >= 70:
@@ -38,6 +41,15 @@ def run_and_display(business_name, data):
         """,
         unsafe_allow_html=True,
     )
+
+    # --- Risk summary ---
+    if risk_summary:
+        st.markdown(
+            f"<div style='background:#F5F5F5; border-left:4px solid #2C3E7A; border-radius:4px; "
+            f"padding:12px 16px; margin:8px 0; font-size:15px; color:#333;'>"
+            f"<strong>Diagnosis:</strong> {risk_summary}</div>",
+            unsafe_allow_html=True,
+        )
 
     # --- Ratio breakdown ---
     st.subheader("Ratio Breakdown")
