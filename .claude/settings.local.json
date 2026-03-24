@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python seed_benchmarks.py)"
+    ]
+  }
+}

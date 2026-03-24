@@ -1,5 +1,5 @@
 """
-Seed benchmarks.db with 50 realistic agency profiles.
+Seed benchmarks.db with 56 realistic agency profiles.
 Wipes existing seed data and re-inserts on every run.
 
 Profiles are spread across:
@@ -298,11 +298,48 @@ profiles = [
      "expenses_current": 340000, "expenses_3m_ago": 305000, "cash_balance": 10000,
      "top_client_revenue": 140000, "accounts_receivable": 700000, "num_employees": 38,
      "gross_margin_current": 0.28, "gross_margin_3m_ago": 0.38},
+
+    # =========================================================
+    # SMALL — extra profiles covering low revenue-per-employee range
+    # (7-10 employees with modest revenue → rpe €40k-€65k)
+    # Without these, agencies like BrightSpark (€57k rpe, 8 employees)
+    # score 0th percentile because the pool only had 2-5 employee criticals.
+    # =========================================================
+
+    {"revenue_current": 34000,  "revenue_1m_ago": 35000,  "revenue_3m_ago": 36000,
+     "expenses_current": 32000, "expenses_3m_ago": 29000, "cash_balance": 12000,
+     "top_client_revenue": 18000, "accounts_receivable": 85000, "num_employees": 9,
+     "gross_margin_current": 0.38, "gross_margin_3m_ago": 0.42},   # rpe ≈ 45.3k
+
+    {"revenue_current": 38000,  "revenue_1m_ago": 40000,  "revenue_3m_ago": 42000,
+     "expenses_current": 36000, "expenses_3m_ago": 32000, "cash_balance": 9000,
+     "top_client_revenue": 20000, "accounts_receivable": 95000, "num_employees": 10,
+     "gross_margin_current": 0.36, "gross_margin_3m_ago": 0.41},   # rpe ≈ 48.0k
+
+    {"revenue_current": 42000,  "revenue_1m_ago": 43000,  "revenue_3m_ago": 44000,
+     "expenses_current": 38000, "expenses_3m_ago": 34000, "cash_balance": 10000,
+     "top_client_revenue": 22000, "accounts_receivable": 100000, "num_employees": 9,
+     "gross_margin_current": 0.37, "gross_margin_3m_ago": 0.42},   # rpe ≈ 55.6k
+
+    {"revenue_current": 45000,  "revenue_1m_ago": 46000,  "revenue_3m_ago": 47000,
+     "expenses_current": 42000, "expenses_3m_ago": 38000, "cash_balance": 8000,
+     "top_client_revenue": 24000, "accounts_receivable": 115000, "num_employees": 10,
+     "gross_margin_current": 0.35, "gross_margin_3m_ago": 0.40},   # rpe ≈ 55.2k
+
+    {"revenue_current": 36000,  "revenue_1m_ago": 37500,  "revenue_3m_ago": 39000,
+     "expenses_current": 33000, "expenses_3m_ago": 30000, "cash_balance": 14000,
+     "top_client_revenue": 19000, "accounts_receivable": 80000, "num_employees": 8,
+     "gross_margin_current": 0.39, "gross_margin_3m_ago": 0.43},   # rpe ≈ 53.0k
+
+    {"revenue_current": 48000,  "revenue_1m_ago": 49500,  "revenue_3m_ago": 51000,
+     "expenses_current": 44000, "expenses_3m_ago": 40000, "cash_balance": 11000,
+     "top_client_revenue": 25000, "accounts_receivable": 120000, "num_employees": 10,
+     "gross_margin_current": 0.34, "gross_margin_3m_ago": 0.39},   # rpe ≈ 59.4k
 ]
 
 
 if __name__ == "__main__":
-    assert len(profiles) == 50, f"Expected 50 profiles, got {len(profiles)}"
+    assert len(profiles) == 56, f"Expected 56 profiles, got {len(profiles)}"
 
     _init_db()
 
