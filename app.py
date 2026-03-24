@@ -3,10 +3,10 @@ import tempfile
 import os
 from pipeline import parse_csv, parse_xero_csv, calculate_ratios, calculate_composite_score, get_ai_interpretation, generate_pdf, save_benchmark, get_percentiles, _init_db, seed_initial_benchmarks
 
+st.set_page_config(page_title="ScoreMyAgency", page_icon="📊", layout="centered")
+
 _init_db()
 seed_initial_benchmarks()
-
-st.set_page_config(page_title="ScoreMyAgency", page_icon="📊", layout="centered")
 
 st.title("📊 ScoreMyAgency")
 st.markdown("Find out if your agency's finances are healthy — in 60 seconds.")

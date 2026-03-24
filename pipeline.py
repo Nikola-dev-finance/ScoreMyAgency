@@ -15,7 +15,16 @@ def get_api_key():
 import anthropic
 client = anthropic.Anthropic(api_key=get_api_key())
 
-DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "benchmarks.db")
+def _resolve_db_path():
+    local = os.path.join(os.path.dirname(os.path.abspath(__file__)), "benchmarks.db")
+    try:
+        with open(local, "a"):
+            pass
+        return local
+    except OSError:
+        return "/tmp/benchmarks.db"
+
+DB_PATH = _resolve_db_path()
 
 def parse_csv(filepath):
     df = pd.read_csv(filepath)
