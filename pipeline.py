@@ -384,9 +384,16 @@ def get_percentiles(agency_size, ratios):
         ).fetchall()
 
     if not rows:
+        print(f"[get_percentiles] WARNING: no rows in DB for size={agency_size}, returning 50 defaults")
         return {k: 50 for k in
                 ["revenue_concentration", "dso", "cash_runway",
                  "gross_margin", "exp_vs_rev", "rev_per_employee"]}
+
+    print(f"[get_percentiles] pool_size={len(rows)}, agency_size={agency_size}")
+    print(f"[get_percentiles] incoming ratios: rev_conc={ratios['revenue_concentration']:.3f} "
+          f"dso={ratios['dso']:.1f} cash_run={ratios['cash_runway']:.2f} "
+          f"gm={ratios['gross_margin_current']:.3f} evr={ratios['exp_vs_rev']:+.4f} "
+          f"rpe={ratios['rev_per_employee']:.0f}")
 
     def pct(values, agency_val, higher_is_better):
         n = len(values)
@@ -394,7 +401,7 @@ def get_percentiles(agency_size, ratios):
         return round(worse / n * 100)
 
     cols = list(zip(*rows))
-    return {
+    result = {
         "revenue_concentration": pct(cols[0], ratios["revenue_concentration"], higher_is_better=False),
         "dso":                   pct(cols[1], ratios["dso"],                   higher_is_better=False),
         "cash_runway":           pct(cols[2], ratios["cash_runway"],           higher_is_better=True),
@@ -402,6 +409,8 @@ def get_percentiles(agency_size, ratios):
         "exp_vs_rev":            pct(cols[4], ratios["exp_vs_rev"],            higher_is_better=False),
         "rev_per_employee":      pct(cols[5], ratios["rev_per_employee"],      higher_is_better=True),
     }
+    print(f"[get_percentiles] result: {result}")
+    return result
 
 
 from reportlab.lib.pagesizes import A4
