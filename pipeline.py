@@ -12,19 +12,23 @@ def get_api_key():
     except Exception:
         return os.getenv("ANTHROPIC_API_KEY")
 
+import sys
 import anthropic
-client = anthropic.Anthropic(api_key=get_api_key())
 
-def _resolve_db_path():
-    local = os.path.join(os.path.dirname(os.path.abspath(__file__)), "benchmarks.db")
-    try:
-        with open(local, "a"):
-            pass
-        return local
-    except OSError:
-        return "/tmp/benchmarks.db"
+try:
+    client = anthropic.Anthropic(api_key=get_api_key())
+except Exception as _e:
+    print(f"[pipeline] WARNING: Anthropic client init failed: {_e}", file=sys.stderr)
+    client = None
 
-DB_PATH = _resolve_db_path()
+try:
+    _local_db = os.path.join(os.path.dirname(os.path.abspath(__file__)), "benchmarks.db")
+    with open(_local_db, "a"):
+        pass
+    DB_PATH = _local_db
+except Exception as _e:
+    print(f"[pipeline] WARNING: local DB path not writable ({_e}), using /tmp/", file=sys.stderr)
+    DB_PATH = "/tmp/benchmarks.db"
 
 def parse_csv(filepath):
     df = pd.read_csv(filepath)
@@ -727,6 +731,8 @@ Ratio scores:
 
 Write the risk summary, 3 findings, and 2 actions."""
 
+    if client is None:
+        raise RuntimeError("Anthropic API key is not configured. Add ANTHROPIC_API_KEY to Streamlit secrets.")
     message = client.messages.create(
         model="claude-opus-4-5",
         max_tokens=1500,
