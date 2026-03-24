@@ -1,7 +1,7 @@
 import streamlit as st
 import tempfile
 import os
-from pipeline import parse_csv, parse_xero_csv, calculate_ratios, calculate_composite_score, get_ai_interpretation, generate_pdf
+from pipeline import parse_csv, parse_xero_csv, calculate_ratios, calculate_composite_score, get_ai_interpretation, generate_pdf, save_benchmark, get_percentiles
 
 st.set_page_config(page_title="ScoreMyAgency", page_icon="📊", layout="centered")
 
@@ -14,6 +14,11 @@ business_name = st.text_input("Agency name", placeholder="e.g. Mosaic Digital")
 def run_and_display(business_name, data):
     ratios = calculate_ratios(data)
     score, scores = calculate_composite_score(ratios)
+
+    n = data["num_employees"]
+    agency_size = "small" if n <= 10 else ("medium" if n <= 30 else "large")
+    percentiles = get_percentiles(agency_size, ratios)
+    save_benchmark(data, ratios, score)
 
     with st.spinner("Generating AI interpretation..."):
         ai = get_ai_interpretation(business_name, score, scores, ratios)
@@ -63,19 +68,23 @@ def run_and_display(business_name, data):
         "rev_per_employee":      ("Revenue per Employee",      f"€{ratios['rev_per_employee']:,.0f}"),
     }
 
-    cols = st.columns([3, 1, 2])
+    cols = st.columns([3, 1, 2, 2])
     cols[0].markdown("**Ratio**")
     cols[1].markdown("**Score**")
     cols[2].markdown("**Value**")
+    cols[3].markdown("**Percentile**")
     st.divider()
 
     for key, (label, value) in ratio_labels.items():
         raw_score = scores[key]
         score_colour = "#2E7D32" if raw_score >= 7 else "#E65100" if raw_score >= 5 else "#C62828"
-        cols = st.columns([3, 1, 2])
+        pct = percentiles.get(key, 50)
+        pct_colour = "#2E7D32" if pct >= 60 else "#E65100" if pct >= 35 else "#C62828"
+        cols = st.columns([3, 1, 2, 2])
         cols[0].write(label)
         cols[1].markdown(f"<span style='color:{score_colour}; font-weight:700;'>{raw_score}/10</span>", unsafe_allow_html=True)
         cols[2].write(value)
+        cols[3].markdown(f"<span style='color:{pct_colour}; font-weight:600;'>Top {pct}%</span>", unsafe_allow_html=True)
 
     # --- Findings ---
     st.subheader("Key Findings")
@@ -91,7 +100,7 @@ def run_and_display(business_name, data):
     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_pdf:
         tmp_pdf_path = tmp_pdf.name
     try:
-        generate_pdf(business_name, score, scores, ratios, findings, actions, risk_summary=risk_summary, output_path=tmp_pdf_path)
+        generate_pdf(business_name, score, scores, ratios, findings, actions, risk_summary=risk_summary, percentiles=percentiles, output_path=tmp_pdf_path)
         with open(tmp_pdf_path, "rb") as f:
             pdf_bytes = f.read()
         st.download_button(

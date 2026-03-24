@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import sqlite3
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -13,6 +14,8 @@ def get_api_key():
 
 import anthropic
 client = anthropic.Anthropic(api_key=get_api_key())
+
+DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "benchmarks.db")
 
 def parse_csv(filepath):
     df = pd.read_csv(filepath)
@@ -305,6 +308,102 @@ def calculate_composite_score(ratios):
     composite = sum(scores[k] * weights[k] for k in scores) * 10
     return round(composite, 1), scores
 
+
+# ---------------------------------------------------------------------------
+# Benchmarking database
+# ---------------------------------------------------------------------------
+
+def _init_db():
+    with sqlite3.connect(DB_PATH) as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS agency_benchmarks (
+                id                        INTEGER PRIMARY KEY AUTOINCREMENT,
+                created_at                TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                agency_size               TEXT,
+                revenue_concentration     REAL,
+                dso                       REAL,
+                cash_runway               REAL,
+                gross_margin              REAL,
+                expense_vs_revenue_growth REAL,
+                revenue_per_employee      REAL,
+                composite_score           REAL
+            )
+        """)
+        conn.commit()
+
+
+def _agency_size(num_employees):
+    if num_employees <= 10:
+        return "small"
+    elif num_employees <= 30:
+        return "medium"
+    return "large"
+
+
+def save_benchmark(data, ratios, composite_score):
+    """Insert an anonymised benchmark row for this agency's analysis."""
+    _init_db()
+    size = _agency_size(data["num_employees"])
+    with sqlite3.connect(DB_PATH) as conn:
+        conn.execute("""
+            INSERT INTO agency_benchmarks
+                (agency_size, revenue_concentration, dso, cash_runway,
+                 gross_margin, expense_vs_revenue_growth, revenue_per_employee, composite_score)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            size,
+            ratios["revenue_concentration"],
+            ratios["dso"],
+            ratios["cash_runway"],
+            ratios["gross_margin_current"],
+            ratios["exp_vs_rev"],
+            ratios["rev_per_employee"],
+            composite_score,
+        ))
+        conn.commit()
+
+
+def get_percentiles(agency_size, ratios):
+    """Return a dict of percentile ranks (0-100) for each ratio.
+
+    Higher percentile = better performance for that metric.
+    Falls back to all sizes if fewer than 5 entries exist for the given size.
+    """
+    _init_db()
+    with sqlite3.connect(DB_PATH) as conn:
+        count = conn.execute(
+            "SELECT COUNT(*) FROM agency_benchmarks WHERE agency_size = ?", (agency_size,)
+        ).fetchone()[0]
+        where  = "agency_size = ?" if count >= 5 else "1=1"
+        params = (agency_size,)      if count >= 5 else ()
+        rows = conn.execute(
+            f"SELECT revenue_concentration, dso, cash_runway, gross_margin, "
+            f"expense_vs_revenue_growth, revenue_per_employee "
+            f"FROM agency_benchmarks WHERE {where}",
+            params,
+        ).fetchall()
+
+    if not rows:
+        return {k: 50 for k in
+                ["revenue_concentration", "dso", "cash_runway",
+                 "gross_margin", "exp_vs_rev", "rev_per_employee"]}
+
+    def pct(values, agency_val, higher_is_better):
+        n = len(values)
+        worse = sum(1 for v in values if (v < agency_val if higher_is_better else v > agency_val))
+        return round(worse / n * 100)
+
+    cols = list(zip(*rows))
+    return {
+        "revenue_concentration": pct(cols[0], ratios["revenue_concentration"], higher_is_better=False),
+        "dso":                   pct(cols[1], ratios["dso"],                   higher_is_better=False),
+        "cash_runway":           pct(cols[2], ratios["cash_runway"],           higher_is_better=True),
+        "gross_margin":          pct(cols[3], ratios["gross_margin_current"],  higher_is_better=True),
+        "exp_vs_rev":            pct(cols[4], ratios["exp_vs_rev"],            higher_is_better=False),
+        "rev_per_employee":      pct(cols[5], ratios["rev_per_employee"],      higher_is_better=True),
+    }
+
+
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable, KeepTogether
@@ -376,7 +475,7 @@ Write the risk summary, 3 findings, and 2 actions."""
 
     return {"risk_summary": risk_summary, "findings": findings, "actions": actions}
 
-def generate_pdf(business_name, score, scores, ratios, findings=None, actions=None, risk_summary=None, output_path="report.pdf"):
+def generate_pdf(business_name, score, scores, ratios, findings=None, actions=None, risk_summary=None, percentiles=None, output_path="report.pdf"):
     from datetime import date
 
     PAGE_W, _ = A4
@@ -542,10 +641,12 @@ def generate_pdf(business_name, score, scores, ratios, findings=None, actions=No
     for i, (key, label) in enumerate(ratio_labels.items(), start=1):
         s    = scores[key]
         shex = ratio_hex(s)
+        pct_text = (f'<br/><font size="6.5" color="#6b7280">top {percentiles[key]}%</font>'
+                    if percentiles and key in percentiles else "")
         rows.append([
             '',   # background-colored cell used as indicator dot
             Paragraph(label, td),
-            Paragraph(f'<font color="{shex}"><b>{s}/10</b></font>', td),
+            Paragraph(f'<font color="{shex}"><b>{s}/10</b></font>{pct_text}', td),
             Paragraph(raw_values[key], td),
             Paragraph(benchmarks[key], tm),
         ])
