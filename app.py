@@ -1,7 +1,10 @@
 import streamlit as st
 import tempfile
 import os
-from pipeline import parse_csv, parse_xero_csv, calculate_ratios, calculate_composite_score, get_ai_interpretation, generate_pdf, save_benchmark, get_percentiles
+from pipeline import parse_csv, parse_xero_csv, calculate_ratios, calculate_composite_score, get_ai_interpretation, generate_pdf, save_benchmark, get_percentiles, _init_db, seed_initial_benchmarks
+
+_init_db()
+seed_initial_benchmarks()
 
 st.set_page_config(page_title="ScoreMyAgency", page_icon="📊", layout="centered")
 
@@ -17,9 +20,7 @@ def run_and_display(business_name, data):
 
     n = data["num_employees"]
     agency_size = "small" if n <= 10 else ("medium" if n <= 30 else "large")
-    st.write("DEBUG ratios passed:", ratios)
     percentiles = get_percentiles(agency_size, ratios)
-    st.write("DEBUG percentiles:", percentiles)
     save_benchmark(data, ratios, score)
 
     with st.spinner("Generating AI interpretation..."):
