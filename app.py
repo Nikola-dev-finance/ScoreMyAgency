@@ -17,7 +17,9 @@ def run_and_display(business_name, data):
 
     n = data["num_employees"]
     agency_size = "small" if n <= 10 else ("medium" if n <= 30 else "large")
+    st.write("DEBUG ratios passed:", ratios)
     percentiles = get_percentiles(agency_size, ratios)
+    st.write("DEBUG percentiles:", percentiles)
     save_benchmark(data, ratios, score)
 
     with st.spinner("Generating AI interpretation..."):
