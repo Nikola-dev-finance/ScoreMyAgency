@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python seed_benchmarks.py)"
+      "Bash(python seed_benchmarks.py)",
+      "Bash(git push:*)"
     ]
   }
 }
