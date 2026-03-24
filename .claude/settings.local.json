@@ -5,7 +5,10 @@
       "Bash(git push:*)",
       "Bash(python -c \"from pipeline import parse_csv, parse_xero_csv, calculate_ratios, calculate_composite_score, get_ai_interpretation, generate_pdf, save_benchmark, get_percentiles, _init_db, seed_initial_benchmarks; print\\(''import OK''\\)\")",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(python -m py_compile pipeline.py)",
+      "Bash(python -m py_compile app.py)",
+      "Bash(bottom third\" rather than just stating the raw number:*)"
     ]
   }
 }
