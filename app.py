@@ -24,7 +24,7 @@ def run_and_display(business_name, data):
     save_benchmark(data, ratios, score)
 
     with st.spinner("Generating AI interpretation..."):
-        ai = get_ai_interpretation(business_name, score, scores, ratios)
+        ai = get_ai_interpretation(business_name, score, scores, ratios, percentiles=percentiles)
         risk_summary = ai["risk_summary"]
         findings     = ai["findings"]
         actions      = ai["actions"]

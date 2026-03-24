@@ -690,7 +690,7 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, Tabl
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import mm
 
-def get_ai_interpretation(business_name, score, scores, ratios):
+def get_ai_interpretation(business_name, score, scores, ratios, percentiles=None):
     system = """You are a financial advisor specialising in digital agencies. You give plain-language feedback to agency owners who have no accounting background.
 
 Agency benchmarks you must use when interpreting the numbers:
@@ -700,6 +700,8 @@ Agency benchmarks you must use when interpreting the numbers:
 - Cash Runway: critical = under 1 month, thin = 1–3 months, healthy = 3–6 months, strong = 6+ months
 - Revenue per Employee: underperforming = below €60,000/year, healthy = €70,000–€120,000/year, strong = above €120,000/year
 - Expense vs Revenue Growth: expenses growing faster than revenue is a warning sign at any level
+
+When peer percentile data is provided, use it to add context — e.g. "your DSO puts you in the bottom third of agencies your size" or "you outperform 80% of peers on cash runway". Make the comparison feel meaningful, not just a number recitation.
 
 Output rules:
 - No jargon. Write like a knowledgeable friend, not an accountant.
@@ -717,17 +719,28 @@ FINDING 3: [what the number shows, how it compares to the benchmark, why it matt
 ACTION 1: [specific, achievable action with a clear deadline]
 ACTION 2: [specific, achievable action with a clear deadline]"""
 
+    def _pct_label(key):
+        if not percentiles or key not in percentiles:
+            return ""
+        p = percentiles[key]
+        if p >= 75:
+            return f" — better than {p}% of similar agencies"
+        elif p >= 40:
+            return f" — middle of the pack ({p}th percentile)"
+        else:
+            return f" — bottom {p}% of similar agencies" if p > 0 else " — bottom of peer group"
+
     user_message = f"""Here is the Financial Health Score report for {business_name}:
 
 Composite Score: {score}/100
 
 Ratio scores:
-- Revenue Concentration: {scores['revenue_concentration']}/10 (top client = {ratios['revenue_concentration']*100:.1f}% of revenue)
-- Days Sales Outstanding: {scores['dso']}/10 ({ratios['dso']:.1f} days average to get paid)
-- Cash Runway: {scores['cash_runway']}/10 ({ratios['cash_runway']:.1f} months of cash remaining)
-- Gross Margin: {scores['gross_margin']}/10 (current margin = {ratios['gross_margin_current']*100:.1f}%)
-- Expense vs Revenue Growth: {scores['exp_vs_rev']}/10 (expense growth minus revenue growth = {ratios['exp_vs_rev']*100:.1f}%)
-- Revenue per Employee: {scores['rev_per_employee']}/10 (€{ratios['rev_per_employee']:,.0f} per person annually)
+- Revenue Concentration: {scores['revenue_concentration']}/10 (top client = {ratios['revenue_concentration']*100:.1f}% of revenue){_pct_label('revenue_concentration')}
+- Days Sales Outstanding: {scores['dso']}/10 ({ratios['dso']:.1f} days average to get paid){_pct_label('dso')}
+- Cash Runway: {scores['cash_runway']}/10 ({ratios['cash_runway']:.1f} months of cash remaining){_pct_label('cash_runway')}
+- Gross Margin: {scores['gross_margin']}/10 (current margin = {ratios['gross_margin_current']*100:.1f}%){_pct_label('gross_margin')}
+- Expense vs Revenue Growth: {scores['exp_vs_rev']}/10 (expense growth minus revenue growth = {ratios['exp_vs_rev']*100:.1f}%){_pct_label('exp_vs_rev')}
+- Revenue per Employee: {scores['rev_per_employee']}/10 (€{ratios['rev_per_employee']:,.0f} per person annually){_pct_label('rev_per_employee')}
 
 Write the risk summary, 3 findings, and 2 actions."""
 
@@ -942,7 +955,49 @@ def generate_pdf(business_name, score, scores, ratios, findings=None, actions=No
     story.append(Spacer(1, 10))
 
     # -----------------------------------------------------------------------
-    # 4. FINDINGS  (colored left-border sidebar)
+    # 4. PEER COMPARISON BOX  (only when percentiles are available)
+    # -----------------------------------------------------------------------
+    if percentiles:
+        RATIO_NAMES = {
+            "revenue_concentration": "revenue concentration",
+            "dso":                   "days sales outstanding",
+            "cash_runway":           "cash runway",
+            "gross_margin":          "gross margin",
+            "exp_vs_rev":            "expense vs revenue growth",
+            "rev_per_employee":      "revenue per employee",
+        }
+        ranked = sorted(percentiles.items(), key=lambda x: x[1], reverse=True)
+        best  = [(RATIO_NAMES[k], v) for k, v in ranked if k in RATIO_NAMES][:2]
+        worst = [(RATIO_NAMES[k], v) for k, v in reversed(ranked) if k in RATIO_NAMES][:2]
+
+        best_parts  = [f"{name} ({pct}th percentile)" for name, pct in best]
+        worst_parts = [f"{name} ({pct}th percentile)" for name, pct in worst]
+
+        peer_text = (
+            f"<b>Peer Comparison</b> &mdash; vs similar-sized agencies: "
+            f"you outperform peers on {' and '.join(best_parts)}. "
+            f"You fall below average on {' and '.join(worst_parts)}."
+        )
+        peer_para = Paragraph(peer_text, ParagraphStyle(
+            'peer_box',
+            fontSize=8.5, fontName='Helvetica', leading=13,
+            textColor=colors.HexColor('#1e3a5f'),
+            leftIndent=10, rightIndent=10,
+        ))
+        peer_box = Table([[peer_para]], colWidths=[CW])
+        peer_box.setStyle(TableStyle([
+            ('BACKGROUND',    (0,0), (-1,-1), colors.HexColor('#e8f0fe')),
+            ('TOPPADDING',    (0,0), (-1,-1), 8),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 8),
+            ('LEFTPADDING',   (0,0), (-1,-1), 10),
+            ('RIGHTPADDING',  (0,0), (-1,-1), 10),
+            ('LINEBEFORE',    (0,0), (0,-1),  3, colors.HexColor('#2C3E7A')),
+        ]))
+        story.append(peer_box)
+        story.append(Spacer(1, 8))
+
+    # -----------------------------------------------------------------------
+    # 5. FINDINGS  (colored left-border sidebar)
     # -----------------------------------------------------------------------
     story.append(Paragraph("Key Findings", section))
     findings = findings or ["No findings generated."]
@@ -971,7 +1026,7 @@ def generate_pdf(business_name, score, scores, ratios, findings=None, actions=No
     story.append(Spacer(1, 10))
 
     # -----------------------------------------------------------------------
-    # 5. ACTIONS  (numbered, light-blue box)
+    # 6. ACTIONS  (numbered, light-blue box)
     # -----------------------------------------------------------------------
     story.append(Paragraph("Recommended Actions", section))
     actions = actions or ["No actions generated."]
@@ -997,7 +1052,7 @@ def generate_pdf(business_name, score, scores, ratios, findings=None, actions=No
         story.append(Spacer(1, 4))
 
     # -----------------------------------------------------------------------
-    # 6. FOOTER
+    # 7. FOOTER
     # -----------------------------------------------------------------------
     story.append(Spacer(1, 8))
     story.append(HRFlowable(width=CW, thickness=0.5, color=RULE))
