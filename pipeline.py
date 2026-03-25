@@ -365,6 +365,17 @@ def save_waitlist_entry(email: str, business_name: str, score: float) -> None:
         conn.commit()
 
 
+def get_waitlist_entries() -> list[dict]:
+    """Return all waitlist rows as a list of dicts, newest first."""
+    _init_db()
+    with sqlite3.connect(DB_PATH) as conn:
+        conn.row_factory = sqlite3.Row
+        rows = conn.execute(
+            "SELECT email, business_name, score, created_at FROM waitlist ORDER BY created_at DESC"
+        ).fetchall()
+    return [dict(r) for r in rows]
+
+
 def _agency_size(num_employees):
     if num_employees <= 10:
         return "small"

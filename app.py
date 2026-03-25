@@ -3,7 +3,7 @@ import tempfile
 import os
 from pipeline import (parse_csv, parse_xero_csv, calculate_ratios, calculate_composite_score,
                        get_ai_interpretation, generate_pdf, save_benchmark, get_percentiles,
-                       _init_db, seed_initial_benchmarks, save_waitlist_entry)
+                       _init_db, seed_initial_benchmarks, save_waitlist_entry, get_waitlist_entries)
 
 st.set_page_config(page_title="ScoreMyAgency", page_icon="📊", layout="centered")
 
@@ -703,9 +703,34 @@ def _show_scoring_tool():
 
 
 # ---------------------------------------------------------------------------
+# Admin page
+# ---------------------------------------------------------------------------
+def _show_admin():
+    st.title("Admin — Waitlist")
+    entries = get_waitlist_entries()
+    st.caption(f"{len(entries)} sign-up{'s' if len(entries) != 1 else ''} total")
+    if not entries:
+        st.info("No waitlist entries yet.")
+        return
+    st.dataframe(
+        entries,
+        column_config={
+            "email":         st.column_config.TextColumn("Email"),
+            "business_name": st.column_config.TextColumn("Agency"),
+            "score":         st.column_config.NumberColumn("Score", format="%.1f"),
+            "created_at":    st.column_config.TextColumn("Submitted (UTC)"),
+        },
+        use_container_width=True,
+        hide_index=True,
+    )
+
+
+# ---------------------------------------------------------------------------
 # Router
 # ---------------------------------------------------------------------------
-if st.session_state.get("show_tool", False):
+if st.query_params.get("admin") == "true":
+    _show_admin()
+elif st.session_state.get("show_tool", False):
     _show_scoring_tool()
 else:
     _show_landing_page()
