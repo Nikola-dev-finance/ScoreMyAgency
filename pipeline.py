@@ -722,8 +722,10 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import mm
 
 
-def _ordinal(n: int) -> str:
-    """Return n with the correct ordinal suffix: 1st, 2nd, 3rd, 42nd, 73rd, 11th, 12th, 13th…"""
+def _ordinal(n) -> str:
+    """Return n with the correct ordinal suffix: 1st, 2nd, 3rd, 42nd, 73rd, 11th, 12th, 13th…
+    Accepts int or float (61.0 → '61st', not '61.0st')."""
+    n = int(n)
     suffix = "th" if 11 <= n % 100 <= 13 else {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
     return f"{n}{suffix}"
 

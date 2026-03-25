@@ -53,7 +53,7 @@ _SAMPLE_RISK = (
 # Sample PDF — built once per session, served from cache
 # ---------------------------------------------------------------------------
 @st.cache_data(show_spinner=False)
-def _build_sample_pdf() -> bytes:
+def _build_sample_pdf(_cache_v: int = 2) -> bytes:  # bump _cache_v to force regeneration
     ratios = calculate_ratios(_SAMPLE_DATA)
     score, scores = calculate_composite_score(ratios)
     try:
