@@ -529,12 +529,12 @@ def _show_scoring_tool():
 
     business_name = st.text_input("Agency name", placeholder="e.g. Mosaic Digital")
 
-    tab_csv, tab_manual = st.tabs(["Upload CSV", "Enter manually"])
+    tab_manual, tab_csv = st.tabs(["Enter your numbers", "Upload Xero/QBO CSV"])
 
     # ── Tab 1: Xero CSV ───────────────────────────────────────────────────────
     with tab_csv:
         uploaded_file = st.file_uploader(
-            "Upload your Xero Profit & Loss CSV export", type=["csv"]
+            "Upload a Profit & Loss CSV export from Xero or QuickBooks Online. We'll auto-detect the format.", type=["csv"]
         )
         st.caption("🔒 Your data is processed in real-time and never stored on our servers.")
 
@@ -669,6 +669,7 @@ def _show_scoring_tool():
 
     # ── Tab 2: Manual entry ───────────────────────────────────────────────────
     with tab_manual:
+        st.caption("Takes about 60 seconds. You'll need: revenue for the last 3 months, total costs, largest client revenue, accounts receivable, cash balance, and headcount.")
         st.markdown("#### Revenue (last 3 months)")
         col1, col2, col3 = st.columns(3)
         rev_current = col1.number_input("This month (€)",    min_value=0.0, step=100.0, placeholder="e.g. 42000", key="rev_current")
