@@ -342,6 +342,26 @@ def _init_db():
                 composite_score           REAL
             )
         """)
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS waitlist (
+                id            INTEGER PRIMARY KEY AUTOINCREMENT,
+                created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                email         TEXT NOT NULL,
+                business_name TEXT,
+                score         REAL
+            )
+        """)
+        conn.commit()
+
+
+def save_waitlist_entry(email: str, business_name: str, score: float) -> None:
+    """Save an email sign-up to the waitlist table."""
+    _init_db()
+    with sqlite3.connect(DB_PATH) as conn:
+        conn.execute(
+            "INSERT INTO waitlist (email, business_name, score) VALUES (?, ?, ?)",
+            (email.strip().lower(), business_name, score),
+        )
         conn.commit()
 
 

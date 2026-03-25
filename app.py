@@ -3,7 +3,7 @@ import tempfile
 import os
 from pipeline import (parse_csv, parse_xero_csv, calculate_ratios, calculate_composite_score,
                        get_ai_interpretation, generate_pdf, save_benchmark, get_percentiles,
-                       _init_db, seed_initial_benchmarks)
+                       _init_db, seed_initial_benchmarks, save_waitlist_entry)
 
 st.set_page_config(page_title="ScoreMyAgency", page_icon="📊", layout="centered")
 
@@ -180,6 +180,50 @@ def run_and_display(business_name, data):
     finally:
         if os.path.exists(tmp_pdf_path):
             os.unlink(tmp_pdf_path)
+
+    # --- Email capture ---
+    st.markdown("<div style='height:16px;'/>", unsafe_allow_html=True)
+    st.markdown(
+        "<div style='background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; "
+        "padding:20px 24px;'>",
+        unsafe_allow_html=True,
+    )
+    st.markdown("**Want this report automatically every month?**")
+    st.markdown(
+        "<p style='color:#6b7280; font-size:13px; margin:-8px 0 12px;'>"
+        "We'll email you an updated score each month so you can track your progress.</p>",
+        unsafe_allow_html=True,
+    )
+
+    wl_key = f"wl_done_{business_name}"
+    if st.session_state.get(wl_key):
+        st.success("You're on the list! We'll be in touch.")
+    else:
+        wl_email = st.text_input(
+            "Your email address",
+            placeholder="you@youragency.com",
+            key=f"wl_email_{business_name}",
+            label_visibility="collapsed",
+        )
+        if st.button("Join waitlist", key=f"wl_btn_{business_name}"):
+            if not wl_email or "@" not in wl_email:
+                st.warning("Please enter a valid email address.")
+            else:
+                try:
+                    save_waitlist_entry(wl_email, business_name, score)
+                    st.session_state[wl_key] = True
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"Couldn't save your email: {e}")
+
+    st.markdown(
+        "<p style='font-size:12px; color:#9ca3af; margin-top:12px;'>"
+        "Or fill out our form: "
+        "<a href='https://docs.google.com/forms/d/e/1FAIpQLSdKQLLlH-mjLRfItqjdxFjjJX4YxZSjkBLZNyRRCP9_hef0aQ/viewform?usp=header' "
+        "target='_blank' style='color:#6b7280;'>Google Form</a></p>",
+        unsafe_allow_html=True,
+    )
+    st.markdown("</div>", unsafe_allow_html=True)
 
 
 # ---------------------------------------------------------------------------
