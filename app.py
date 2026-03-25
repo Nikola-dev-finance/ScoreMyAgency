@@ -466,7 +466,7 @@ def _show_landing_page():
         st.markdown("""
         <div style="text-align:center; padding:20px 12px;">
             <div class="proof-stat">50+</div>
-            <div class="proof-label" style="color:#6b7280; font-size:14px;">agency data points<br>in the benchmark pool</div>
+            <div class="proof-label" style="color:#6b7280; font-size:14px;">agency benchmarks from<br>industry research and public data</div>
         </div>
         """, unsafe_allow_html=True)
     with sp2:
@@ -484,13 +484,6 @@ def _show_landing_page():
         </div>
         """, unsafe_allow_html=True)
 
-    # Testimonial placeholders
-    st.markdown(
-        "<p style='text-align:center; color:#9ca3af; font-size:12px; margin-top:4px;'>"
-        "Testimonials coming soon.</p>",
-        unsafe_allow_html=True,
-    )
-
     st.markdown("<div style='height:48px;'/>", unsafe_allow_html=True)
 
     # Bottom CTA
@@ -502,6 +495,10 @@ def _show_landing_page():
             st.rerun()
 
     st.markdown("<div style='height:32px;'/>", unsafe_allow_html=True)
+
+    # Footer
+    st.divider()
+    st.caption("ScoreMyAgency · Built by Nikola · Questions? hello@scoremyagency.com")
 
 
 # ---------------------------------------------------------------------------
@@ -526,6 +523,7 @@ def _show_scoring_tool():
         uploaded_file = st.file_uploader(
             "Upload your Xero Profit & Loss CSV export", type=["csv"]
         )
+        st.caption("🔒 Your data is processed in real-time and never stored on our servers.")
 
         if uploaded_file:
             file_id = f"{uploaded_file.name}_{uploaded_file.size}"
