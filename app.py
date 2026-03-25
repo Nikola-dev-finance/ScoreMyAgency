@@ -334,7 +334,7 @@ def _show_landing_page():
         unsafe_allow_html=True,
     )
     st.markdown(
-        '<p class="hero-sub">Upload your Xero P&amp;L or enter your numbers manually. '
+        '<p class="hero-sub" style="text-align:center;">Upload your Xero P&amp;L or enter your numbers manually. '
         'Get a score, peer benchmarks, and specific actions to improve — powered by AI.</p>',
         unsafe_allow_html=True,
     )
