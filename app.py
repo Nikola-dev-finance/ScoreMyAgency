@@ -78,9 +78,10 @@ def _build_sample_pdf() -> bytes:
 
 
 # ---------------------------------------------------------------------------
-# run_and_display — called from both scoring tabs
+# Scoring pipeline — compute then render (split so results survive reruns)
 # ---------------------------------------------------------------------------
-def run_and_display(business_name, data):
+def _compute_and_store(business_name, data):
+    """Run the full analysis and persist every result in session state."""
     ratios = calculate_ratios(data)
     score, scores = calculate_composite_score(ratios)
 
@@ -91,9 +92,49 @@ def run_and_display(business_name, data):
 
     with st.spinner("Generating AI interpretation..."):
         ai = get_ai_interpretation(business_name, score, scores, ratios, percentiles=percentiles)
-        risk_summary = ai["risk_summary"]
-        findings     = ai["findings"]
-        actions      = ai["actions"]
+
+    risk_summary = ai["risk_summary"]
+    findings     = ai["findings"]
+    actions      = ai["actions"]
+
+    # Generate PDF once and store the bytes so reruns don't regenerate it
+    pdf_bytes = None
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_pdf:
+        tmp_path = tmp_pdf.name
+    try:
+        generate_pdf(business_name, score, scores, ratios, findings, actions,
+                     risk_summary=risk_summary, percentiles=percentiles, output_path=tmp_path)
+        with open(tmp_path, "rb") as f:
+            pdf_bytes = f.read()
+    finally:
+        if os.path.exists(tmp_path):
+            os.unlink(tmp_path)
+
+    st.session_state["_results"] = {
+        "business_name": business_name,
+        "score":         score,
+        "scores":        scores,
+        "ratios":        ratios,
+        "risk_summary":  risk_summary,
+        "findings":      findings,
+        "actions":       actions,
+        "percentiles":   percentiles,
+        "pdf_bytes":     pdf_bytes,
+    }
+
+
+def _render_results():
+    """Render results stored by _compute_and_store. Safe to call on every rerun."""
+    r = st.session_state["_results"]
+    business_name = r["business_name"]
+    score         = r["score"]
+    scores        = r["scores"]
+    ratios        = r["ratios"]
+    risk_summary  = r["risk_summary"]
+    findings      = r["findings"]
+    actions       = r["actions"]
+    percentiles   = r["percentiles"]
+    pdf_bytes     = r["pdf_bytes"]
 
     # --- Score display ---
     if score >= 70:
@@ -163,13 +204,7 @@ def run_and_display(business_name, data):
     for i, action in enumerate(actions, 1):
         st.success(f"**Action {i}:** {action}")
 
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_pdf:
-        tmp_pdf_path = tmp_pdf.name
-    try:
-        generate_pdf(business_name, score, scores, ratios, findings, actions,
-                     risk_summary=risk_summary, percentiles=percentiles, output_path=tmp_pdf_path)
-        with open(tmp_pdf_path, "rb") as f:
-            pdf_bytes = f.read()
+    if pdf_bytes:
         st.download_button(
             label="📥 Download PDF Report",
             data=pdf_bytes,
@@ -177,9 +212,6 @@ def run_and_display(business_name, data):
             mime="application/pdf",
             type="primary",
         )
-    finally:
-        if os.path.exists(tmp_pdf_path):
-            os.unlink(tmp_pdf_path)
 
     # --- Email capture ---
     st.markdown("<div style='height:16px;'/>", unsafe_allow_html=True)
@@ -212,6 +244,7 @@ def run_and_display(business_name, data):
                 try:
                     save_waitlist_entry(wl_email, business_name, score)
                     st.session_state[wl_key] = True
+                    # Safe to rerun — _results is already in session_state
                     st.rerun()
                 except Exception as e:
                     st.error(f"Couldn't save your email: {e}")
@@ -472,6 +505,7 @@ def _show_scoring_tool():
     # Back to home
     if st.button("← Back to home", key="btn_back"):
         st.session_state.show_tool = False
+        st.session_state.pop("_results", None)
         st.rerun()
 
     st.title("📊 ScoreMyAgency")
@@ -611,7 +645,7 @@ def _show_scoring_tool():
                             "gross_margin_3m_ago":  ss["xr_gm_3m"] / 100,
                         }
                         with st.spinner("Analysing your financials..."):
-                            run_and_display(business_name, data)
+                            _compute_and_store(business_name, data)
 
         elif business_name:
             st.info("Upload a Xero P&L CSV to continue.")
@@ -661,7 +695,11 @@ def _show_scoring_tool():
                     "gross_margin_3m_ago":  gm_3m / 100,
                 }
                 with st.spinner("Analysing your financials..."):
-                    run_and_display(business_name, data)
+                    _compute_and_store(business_name, data)
+
+    # Render persisted results (survives any rerun including email submit)
+    if "_results" in st.session_state:
+        _render_results()
 
 
 # ---------------------------------------------------------------------------
