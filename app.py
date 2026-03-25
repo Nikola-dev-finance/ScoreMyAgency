@@ -196,6 +196,12 @@ def _render_results():
         cols[2].write(value)
         cols[3].markdown(f"<span style='color:{pct_colour}; font-weight:600;'>Top {pct}%</span>", unsafe_allow_html=True)
 
+    st.markdown(
+        "<p style='font-size:11px; color:#9ca3af; margin:4px 0 16px;'>"
+        "Based on agency benchmark data. Percentiles become more precise as more agencies use the tool.</p>",
+        unsafe_allow_html=True,
+    )
+
     st.subheader("Key Findings")
     for i, finding in enumerate(findings, 1):
         st.info(f"**Finding {i}:** {finding}")

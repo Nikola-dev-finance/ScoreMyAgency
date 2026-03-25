@@ -721,6 +721,13 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, Tabl
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import mm
 
+
+def _ordinal(n: int) -> str:
+    """Return n with the correct ordinal suffix: 1st, 2nd, 3rd, 42nd, 73rd, 11th, 12th, 13th…"""
+    suffix = "th" if 11 <= n % 100 <= 13 else {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
+    return f"{n}{suffix}"
+
+
 def get_ai_interpretation(business_name, score, scores, ratios, percentiles=None):
     system = """You are a financial advisor specialising in digital agencies. You give plain-language feedback to agency owners who have no accounting background.
 
@@ -757,7 +764,7 @@ ACTION 2: [specific, achievable action with a clear deadline]"""
         if p >= 75:
             return f" — better than {p}% of similar agencies"
         elif p >= 40:
-            return f" — middle of the pack ({p}th percentile)"
+            return f" — middle of the pack ({_ordinal(p)} percentile)"
         else:
             return f" — bottom {p}% of similar agencies" if p > 0 else " — bottom of peer group"
 
@@ -1001,8 +1008,8 @@ def generate_pdf(business_name, score, scores, ratios, findings=None, actions=No
         best  = [(RATIO_NAMES[k], v) for k, v in ranked if k in RATIO_NAMES][:2]
         worst = [(RATIO_NAMES[k], v) for k, v in reversed(ranked) if k in RATIO_NAMES][:2]
 
-        best_parts  = [f"{name} ({pct}th percentile)" for name, pct in best]
-        worst_parts = [f"{name} ({pct}th percentile)" for name, pct in worst]
+        best_parts  = [f"{name} ({_ordinal(pct)} percentile)" for name, pct in best]
+        worst_parts = [f"{name} ({_ordinal(pct)} percentile)" for name, pct in worst]
 
         peer_text = (
             f"<b>Peer Comparison</b> &mdash; vs similar-sized agencies: "
@@ -1025,7 +1032,13 @@ def generate_pdf(business_name, score, scores, ratios, findings=None, actions=No
             ('LINEBEFORE',    (0,0), (0,-1),  3, colors.HexColor('#2C3E7A')),
         ]))
         story.append(peer_box)
-        story.append(Spacer(1, 8))
+        story.append(Spacer(1, 4))
+        story.append(Paragraph(
+            "Based on agency benchmark data. Percentiles become more precise as more agencies use the tool.",
+            ParagraphStyle('disclaimer', fontSize=6.5, fontName='Helvetica',
+                           textColor=colors.HexColor('#9ca3af'), leading=9),
+        ))
+        story.append(Spacer(1, 6))
 
     # -----------------------------------------------------------------------
     # 5. FINDINGS  (colored left-border sidebar)
