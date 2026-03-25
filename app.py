@@ -5,7 +5,18 @@ from pipeline import (parse_csv, parse_xero_csv, calculate_ratios, calculate_com
                        get_ai_interpretation, generate_pdf, save_benchmark, get_percentiles,
                        _init_db, seed_initial_benchmarks, save_waitlist_entry, get_waitlist_entries)
 
-st.set_page_config(page_title="ScoreMyAgency", page_icon="📊", layout="centered")
+st.set_page_config(
+    page_title="ScoreMyAgency — Financial Health Score for Digital Agencies",
+    page_icon="📊",
+    layout="wide",
+)
+
+st.markdown(
+    '<meta name="description" content="Free financial health scoring tool for digital agencies. '
+    "Upload your Xero P&L or enter numbers manually. Get a 0-100 score, peer benchmarks, "
+    'and AI-powered recommendations in under 2 minutes.">',
+    unsafe_allow_html=True,
+)
 
 _init_db()
 seed_initial_benchmarks()
