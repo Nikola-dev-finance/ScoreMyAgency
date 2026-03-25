@@ -282,25 +282,22 @@ def _render_results():
 def _show_landing_page():
     st.markdown("""
     <style>
-    .hero-headline {
-        font-size: 42px; font-weight: 800; color: #1a2332;
-        line-height: 1.2; margin: 0 0 16px; text-align: center;
-    }
-    .hero-sub {
-        font-size: 17px; color: #6b7280; line-height: 1.6;
-        max-width: 580px; margin: 0 auto 8px; text-align: center;
-    }
     .step-card {
-        background: #f8fafc; border: 1px solid #e2e8f0;
+        background: #16213e; border: 1px solid #333;
         border-radius: 12px; padding: 24px 20px; text-align: center; height: 100%;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .step-card:hover {
+        border-color: #FF4B4B;
+        box-shadow: 0 4px 20px rgba(255, 75, 75, 0.12);
     }
     .step-num {
-        display: inline-block; background: #1a2332; color: white;
+        display: inline-block; background: #FF4B4B; color: white;
         font-size: 13px; font-weight: 700; border-radius: 50%;
         width: 28px; height: 28px; line-height: 28px; margin-bottom: 12px;
     }
-    .step-title { font-size: 15px; font-weight: 700; color: #1a2332; margin: 0 0 6px; }
-    .step-body  { font-size: 13px; color: #6b7280; line-height: 1.5; margin: 0; }
+    .step-title { font-size: 15px; font-weight: 700; color: #f1f5f9; margin: 0 0 6px; }
+    .step-body  { font-size: 13px; color: #94a3b8; line-height: 1.5; margin: 0; }
     .preview-card {
         background: #f8fafc; border: 1px solid #e2e8f0;
         border-radius: 12px; padding: 20px 24px; margin-bottom: 8px;
@@ -328,19 +325,25 @@ def _show_landing_page():
     """, unsafe_allow_html=True)
 
     # ── Hero ──────────────────────────────────────────────────────────────────
-    st.markdown("<div style='padding: 48px 0 32px;'>", unsafe_allow_html=True)
-    st.markdown(
-        '<p class="hero-headline">Know your agency\'s real financial health in 2 minutes</p>',
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        '<div style="display:flex; justify-content:center; width:100%;">'
-        '<p class="hero-sub" style="text-align:center !important;">Upload your Xero P&amp;L or enter your numbers manually. '
-        'Get a score, peer benchmarks, and specific actions to improve — powered by AI.</p>'
-        '</div>',
-        unsafe_allow_html=True,
-    )
-    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown("""
+    <div style="
+        background: linear-gradient(135deg, #0E1117 0%, #1a1a2e 100%);
+        border-radius: 16px;
+        padding: 72px 24px 60px;
+        text-align: center;
+        margin-bottom: 8px;
+    ">
+        <h1 style="
+            font-size: 2.5rem; font-weight: 700; color: #ffffff;
+            line-height: 1.2; margin: 0 auto 20px; max-width: 700px;
+        ">Know your agency's real financial health in 2 minutes</h1>
+        <p style="
+            font-size: 1.05rem; color: #999999; line-height: 1.7;
+            max-width: 560px; margin: 0 auto 36px;
+        ">Upload your Xero P&amp;L or enter your numbers manually. Get a score,
+        peer benchmarks, and specific actions to improve — powered by AI.</p>
+    </div>
+    """, unsafe_allow_html=True)
 
     col_l, col_c, col_r = st.columns([1.5, 2, 1.5])
     with col_c:
