@@ -334,8 +334,10 @@ def _show_landing_page():
         unsafe_allow_html=True,
     )
     st.markdown(
-        '<p class="hero-sub" style="text-align:center;">Upload your Xero P&amp;L or enter your numbers manually. '
-        'Get a score, peer benchmarks, and specific actions to improve — powered by AI.</p>',
+        '<div style="display:flex; justify-content:center; width:100%;">'
+        '<p class="hero-sub" style="text-align:center !important;">Upload your Xero P&amp;L or enter your numbers manually. '
+        'Get a score, peer benchmarks, and specific actions to improve — powered by AI.</p>'
+        '</div>',
         unsafe_allow_html=True,
     )
     st.markdown("</div>", unsafe_allow_html=True)
