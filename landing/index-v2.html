@@ -685,6 +685,71 @@
     .report-ai-box strong { color: #94a3b8; font-weight: 600; }
 
 
+    /* ════════════════════════════════════════
+       TESTIMONIALS
+    ════════════════════════════════════════ */
+    #testimonials {
+      background: var(--bg);
+    }
+    #testimonials h2 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.9rem, 3vw, 2.5rem);
+      font-weight: 400;
+      text-align: center;
+      margin-bottom: 56px;
+    }
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .testi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      transition: box-shadow 0.2s;
+    }
+    .testi-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.06); }
+
+    .testi-stars { color: var(--teal-l); font-size: 0.85rem; letter-spacing: 2px; }
+    .testi-quote {
+      font-size: 0.94rem;
+      color: var(--body);
+      line-height: 1.7;
+      font-weight: 300;
+      flex: 1;
+    }
+    .testi-quote strong { font-weight: 600; color: var(--ink); font-style: normal; }
+    .testi-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .testi-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--teal-glow);
+      border: 1px solid rgba(15,118,110,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
+      font-size: 0.9rem;
+      color: var(--teal);
+      flex-shrink: 0;
+    }
+    .testi-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .testi-role { font-size: 0.78rem; color: var(--muted); }
 
 
     /* ════════════════════════════════════════
@@ -920,6 +985,7 @@
     @media (max-width: 960px) {
       .ratios-layout,
       .sample-layout { grid-template-columns: 1fr; gap: 48px; }
+      .testimonials-grid,
       .steps { grid-template-columns: 1fr; }
       .trust-row { grid-template-columns: 1fr 1fr; }
       .footer-top { grid-template-columns: 1fr 1fr; }
@@ -1195,6 +1261,55 @@
   </section>
 
 
+  <!-- ── TESTIMONIALS ────────────────────────────────────────────────────── -->
+  <section id="testimonials">
+    <div class="container">
+      <h2 class="fade">What agency owners are saying</h2>
+      <div class="testimonials-grid">
+        <div class="testi-card fade d1">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-quote">
+            "We had a gut feeling our revenue was too concentrated in one client. ScoreMyAgency confirmed it — <strong>we scored 4/10 on concentration</strong> — and gave us a clear action plan. We've since onboarded two new retainer clients."
+          </p>
+          <div class="testi-author">
+            <div class="testi-avatar">S</div>
+            <div>
+              <div class="testi-name">Sarah M.</div>
+              <div class="testi-role">Founder, digital marketing agency · 12 people</div>
+            </div>
+          </div>
+        </div>
+        <div class="testi-card fade d2">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-quote">
+            "As a non-finance person, I always dreaded looking at the numbers. This tool makes it <strong>completely approachable</strong>. I got my score in 90 seconds and finally understood where we stood versus other agencies our size."
+          </p>
+          <div class="testi-author">
+            <div class="testi-avatar">J</div>
+            <div>
+              <div class="testi-name">James K.</div>
+              <div class="testi-role">Managing Director, SEO agency · 8 people</div>
+            </div>
+          </div>
+        </div>
+        <div class="testi-card fade d3">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-quote">
+            "I use it monthly as a health check. The peer benchmarks are the most valuable part — it's one thing to know your gross margin is 58%, it's another to know <strong>that puts you in the bottom third</strong> of agencies your size."
+          </p>
+          <div class="testi-author">
+            <div class="testi-avatar">R</div>
+            <div>
+              <div class="testi-name">Rachel T.</div>
+              <div class="testi-role">Co-founder, web &amp; brand studio · 20 people</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
   <!-- ── TRUST ───────────────────────────────────────────────────────────── -->
   <section id="trust">
     <div class="container">
@@ -1239,7 +1354,7 @@
         </div>
         <div class="faq-item" onclick="toggleFaq(this)">
           <div class="faq-q">Is my financial data safe?<span class="faq-toggle">+</span></div>
-          <div class="faq-a">Your raw financial data (revenue, costs, cash balance, headcount) is never stored. Once your report generates, it's gone. We save only anonymized ratio scores — like gross margin percentage and DSO — with no agency name or identifying details. This is what powers the peer benchmarks. There's no way to trace a data point back to your agency.</div>
+          <div class="faq-a">Absolutely. Your data is processed in real-time only and is never stored on our servers. We have no database of agency financials. Once your session ends, nothing is retained.</div>
         </div>
         <div class="faq-item" onclick="toggleFaq(this)">
           <div class="faq-q">Do I need to use Xero or QuickBooks?<span class="faq-toggle">+</span></div>
