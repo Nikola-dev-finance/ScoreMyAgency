@@ -414,27 +414,49 @@ def _show_landing_page():
                 <div>
                     <div style="font-size:11px; color:#666; font-weight:600;
                                 letter-spacing:1px; text-transform:uppercase;">Financial Health Score</div>
-                    <div style="font-size:18px; font-weight:700; color:#2E7D32;">Healthy</div>
+                    <div style="font-size:18px; font-weight:700; color:#2E7D32;">Healthy ✓</div>
                 </div>
             </div>
             <div style="font-size:12px; color:#374151; background:#f1f5f9;
-                        border-left:3px solid #2C3E7A; padding:8px 10px; border-radius:3px; margin-bottom:12px;">
+                        border-left:3px solid #2C3E7A; padding:8px 10px; border-radius:3px; margin-bottom:14px;">
                 <strong>Diagnosis:</strong> Strong fundamentals across the board — focus on
                 investing this stability into growth.
             </div>
-            <div class="preview-ratio-row">
-                <span>Revenue Concentration</span>
-                <span style="color:#2E7D32; font-weight:600;">10/10 &nbsp;·&nbsp; 20.0% &nbsp;·&nbsp; Top 78%</span>
+
+            <!-- Revenue Concentration -->
+            <div style="margin-bottom:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:3px;">
+                    <span style="font-size:12px; color:#374151;">Revenue Concentration</span>
+                    <span style="font-size:12px; font-weight:700; color:#2E7D32;">10/10 &nbsp;·&nbsp; 20.0% &nbsp;·&nbsp; Top 78%</span>
+                </div>
+                <div style="background:#e5e7eb; border-radius:999px; height:6px; overflow:hidden;">
+                    <div style="width:100%; height:100%; background:linear-gradient(90deg,#4caf50,#2E7D32); border-radius:999px;"></div>
+                </div>
             </div>
-            <div class="preview-ratio-row">
-                <span>Days Sales Outstanding</span>
-                <span style="color:#2E7D32; font-weight:600;">10/10 &nbsp;·&nbsp; 19.4 days &nbsp;·&nbsp; Top 82%</span>
+
+            <!-- Days Sales Outstanding -->
+            <div style="margin-bottom:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:3px;">
+                    <span style="font-size:12px; color:#374151;">Days Sales Outstanding</span>
+                    <span style="font-size:12px; font-weight:700; color:#2E7D32;">10/10 &nbsp;·&nbsp; 19.4 days &nbsp;·&nbsp; Top 82%</span>
+                </div>
+                <div style="background:#e5e7eb; border-radius:999px; height:6px; overflow:hidden;">
+                    <div style="width:100%; height:100%; background:linear-gradient(90deg,#4caf50,#2E7D32); border-radius:999px;"></div>
+                </div>
             </div>
-            <div class="preview-ratio-row">
-                <span>Cash Runway</span>
-                <span style="color:#2E7D32; font-weight:600;">7/10 &nbsp;·&nbsp; 5.4 months &nbsp;·&nbsp; Top 71%</span>
+
+            <!-- Cash Runway -->
+            <div style="margin-bottom:12px;">
+                <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:3px;">
+                    <span style="font-size:12px; color:#374151;">Cash Runway</span>
+                    <span style="font-size:12px; font-weight:700; color:#e67e22;">7/10 &nbsp;·&nbsp; 5.4 months &nbsp;·&nbsp; Top 71%</span>
+                </div>
+                <div style="background:#e5e7eb; border-radius:999px; height:6px; overflow:hidden;">
+                    <div style="width:70%; height:100%; background:linear-gradient(90deg,#f59e0b,#e67e22); border-radius:999px;"></div>
+                </div>
             </div>
-            <div class="preview-ratio-row" style="border-bottom:none;">
+
+            <div style="border-top:1px solid #e5e7eb; padding-top:10px;">
                 <span style="color:#9ca3af; font-size:12px;">+ 3 more ratios, AI findings &amp; actions in full report</span>
             </div>
         </div>
@@ -444,8 +466,8 @@ def _show_landing_page():
         st.markdown(
             "<div style='padding:16px 0;'>"
             "<p style='font-size:14px; color:#374151; margin-bottom:16px;'>"
-            "The full report includes all 6 ratio scores, peer percentile benchmarks, "
-            "3 AI-written findings, and 2 specific actions — all in a branded PDF.</p>"
+            "Full report includes all 6 ratios, percentile benchmarks, AI-written findings, "
+            "and action items — in a branded PDF.</p>"
             "</div>",
             unsafe_allow_html=True,
         )
