@@ -1,9 +1,10 @@
 import streamlit as st
 import tempfile
 import os
-from pipeline import (parse_csv, parse_xero_csv, calculate_ratios, calculate_composite_score,
-                       get_ai_interpretation, generate_pdf, save_benchmark, get_percentiles,
-                       _init_db, seed_initial_benchmarks, save_waitlist_entry, get_waitlist_entries)
+from pipeline import (parse_financial_csv, calculate_ratios,
+                       calculate_composite_score, get_ai_interpretation, generate_pdf, save_benchmark,
+                       get_percentiles, _init_db, seed_initial_benchmarks, save_waitlist_entry,
+                       get_waitlist_entries)
 
 st.set_page_config(
     page_title="ScoreMyAgency — Financial Health Score for Digital Agencies",
@@ -549,16 +550,7 @@ def _show_scoring_tool():
                     tmp.write(uploaded_file.read())
                     tmp_path = tmp.name
                 try:
-                    try:
-                        p = parse_xero_csv(tmp_path)
-                    except Exception as xero_exc:
-                        try:
-                            raw = parse_csv(tmp_path)
-                            p = raw
-                        except Exception as csv_exc:
-                            raise RuntimeError(
-                                f"Xero parser: {xero_exc} | Flat CSV parser: {csv_exc}"
-                            )
+                    p = parse_financial_csv(tmp_path)
                     missing = {k for k, v in p.items() if v is None}
                     st.session_state.update({
                         "xr_rev_current":  p["revenue_current"]      or 0.0,

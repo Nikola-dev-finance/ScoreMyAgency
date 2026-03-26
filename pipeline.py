@@ -73,7 +73,13 @@ def _xero_parse_number(raw):
 
 
 def parse_xero_csv(filepath):
-    """Parse a real Xero Profit & Loss CSV export.
+    """Parse a Xero Profit & Loss CSV export.
+
+    Supported formats
+    -----------------
+    This function handles the Xero P&L format only.
+    For auto-detection across Xero and QuickBooks Online, use
+    parse_financial_csv() instead.
 
     Xero P&L structure
     ------------------
@@ -232,6 +238,243 @@ def parse_xero_csv(filepath):
         "gross_margin_current": gm_current,
         "gross_margin_3m_ago":  gm_3m_ago,
     }
+
+
+def parse_qbo_csv(filepath):
+    """Parse a QuickBooks Online Profit & Loss CSV export.
+
+    Supported formats
+    -----------------
+    This function handles the QuickBooks Online P&L format only.
+    For auto-detection across Xero and QuickBooks Online, use
+    parse_financial_csv() instead.
+
+    QBO P&L structure (monthly breakdown — recommended export setting)
+    ------------------------------------------------------------------
+    Rows 0-N  : metadata rows (company name, "Profit and Loss", date range)
+    Header    : row with ≥2 "Mon YYYY" cells, OR a single "TOTAL" column
+    Data rows : label in col 0, values in period columns
+    Key labels: "Total Income", "Total Cost of Goods Sold", "Gross Profit",
+                "Total Expenses", "Net Income"
+
+    Single-period exports (TOTAL column only) return None for 1m_ago and
+    3m_ago — the scoring form will ask the user to fill those in manually.
+
+    Returns the same dict shape as parse_csv(). Balance-sheet fields
+    (cash, AR, top client, headcount) are always None from a P&L.
+    """
+    import csv
+    import re
+    from datetime import datetime
+
+    MONTH_RE = re.compile(
+        r"^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{4}$",
+        re.IGNORECASE,
+    )
+
+    with open(filepath, newline="", encoding="utf-8-sig") as f:
+        rows = list(csv.reader(f))
+
+    # ------------------------------------------------------------------
+    # 1. Locate period columns — prefer monthly, fall back to TOTAL
+    # ------------------------------------------------------------------
+    header_idx = None
+    month_cols = []   # [(col_index, datetime), ...]
+    total_col  = None
+
+    for i, row in enumerate(rows):
+        found = []
+        for j, cell in enumerate(row):
+            stripped = cell.strip()
+            if MONTH_RE.match(stripped):
+                try:
+                    found.append((j, datetime.strptime(stripped, "%b %Y")))
+                except ValueError:
+                    pass
+        if len(found) >= 2:
+            header_idx = i
+            month_cols = found
+            break
+        # Check for a TOTAL column on the same pass
+        if total_col is None:
+            for j, cell in enumerate(row):
+                if cell.strip().upper() == "TOTAL":
+                    header_idx = i
+                    total_col  = j
+                    # Keep scanning — monthly columns are preferred
+
+    if header_idx is None:
+        raise ValueError(
+            "Could not find period columns in the QuickBooks export. "
+            "Export with 'Display columns by: Month' for the best results."
+        )
+
+    # Pick columns to use
+    if month_cols:
+        month_cols.sort(key=lambda x: x[1])
+        last3       = month_cols[-3:]
+        col_current = last3[-1][0]
+        col_1m_ago  = last3[-2][0] if len(last3) >= 2 else None
+        col_3m_ago  = last3[0][0]
+    else:
+        # Single-period (TOTAL column only)
+        col_current = total_col
+        col_1m_ago  = None
+        col_3m_ago  = None
+
+    # ------------------------------------------------------------------
+    # 2. Index data rows by normalised label (strip leading spaces used
+    #    by QBO for indented sub-items)
+    # ------------------------------------------------------------------
+    label_index = {}
+    for row in rows[header_idx + 1:]:
+        if not row:
+            continue
+        label = row[0].strip().lower()
+        if label and label not in label_index:
+            label_index[label] = row
+
+    def _get(keywords, col):
+        if col is None:
+            return None
+        for kw in keywords:
+            row = label_index.get(kw.lower())
+            if row is not None and col < len(row):
+                return _xero_parse_number(row[col])
+        return None
+
+    # ------------------------------------------------------------------
+    # 3. Revenue
+    # ------------------------------------------------------------------
+    REVENUE_KW = [
+        "total income",
+        "total revenue",
+        "total ordinary income",
+        "income",
+        "revenue",
+    ]
+    rev_current = _get(REVENUE_KW, col_current)
+    rev_1m_ago  = _get(REVENUE_KW, col_1m_ago)
+    rev_3m_ago  = _get(REVENUE_KW, col_3m_ago)
+
+    # ------------------------------------------------------------------
+    # 4. Total costs = COGS + Operating Expenses
+    #    Fallback: Revenue − Net Income (always true by definition)
+    # ------------------------------------------------------------------
+    COGS_KW = [
+        "total cost of goods sold",
+        "total cost of sales",
+        "total cogs",
+        "cost of goods sold",
+        "cost of sales",
+    ]
+    OPEX_KW = [
+        "total expenses",
+        "total operating expenses",
+        "total other expenses",
+        "expenses",
+    ]
+    NET_KW = ["net income", "net earnings", "net profit", "net income or loss"]
+
+    def _total_costs(col):
+        cogs = _get(COGS_KW, col) or 0.0
+        opex = _get(OPEX_KW, col) or 0.0
+        if cogs or opex:
+            return cogs + opex
+        # Fallback: Revenue − Net Income
+        rev = _get(REVENUE_KW, col)
+        net = _get(NET_KW, col)
+        if rev is not None and net is not None:
+            return rev - net
+        return None
+
+    exp_current = _total_costs(col_current)
+    exp_3m_ago  = _total_costs(col_3m_ago)
+
+    # ------------------------------------------------------------------
+    # 5. Gross margin
+    #    QBO reports "Gross Profit" directly; fall back to (Rev − COGS)/Rev
+    # ------------------------------------------------------------------
+    def _gross_margin(col):
+        gp  = _get(["gross profit"], col)
+        rev = _get(REVENUE_KW, col)
+        if gp is not None and rev:
+            return gp / rev
+        cogs = _get(COGS_KW, col)
+        if rev and cogs is not None:
+            return (rev - cogs) / rev
+        return None
+
+    gm_current = _gross_margin(col_current)
+    gm_3m_ago  = _gross_margin(col_3m_ago)
+
+    return {
+        "revenue_current":      rev_current,
+        "revenue_1m_ago":       rev_1m_ago,
+        "revenue_3m_ago":       rev_3m_ago,
+        "expenses_current":     exp_current,
+        "expenses_3m_ago":      exp_3m_ago,
+        "cash_balance":         None,
+        "top_client_revenue":   None,
+        "accounts_receivable":  None,
+        "num_employees":        None,
+        "gross_margin_current": gm_current,
+        "gross_margin_3m_ago":  gm_3m_ago,
+    }
+
+
+def parse_financial_csv(filepath):
+    """Auto-detect CSV format and parse a Profit & Loss export.
+
+    Supported formats
+    -----------------
+    - Xero P&L export  : monthly columns like "Jan 2026"; labels like
+                         "Total Income" / "Total Revenue"
+    - QuickBooks Online: monthly columns OR single TOTAL column; metadata
+                         rows containing "Profit and Loss" / "Total Income"
+
+    Detection order
+    ---------------
+    1. Scan the first 25 rows for QBO fingerprints ("QuickBooks",
+       "Profit and Loss" + "Total Income" or "Net Income").
+    2. If QBO fingerprints found → parse_qbo_csv().
+    3. Otherwise → parse_xero_csv() (validated by finding month columns).
+    4. If both fail → raise ValueError with a friendly message.
+
+    Returns the same dict shape as parse_csv(). Balance-sheet fields
+    not present in a P&L are returned as None.
+    """
+    import csv as _csv
+
+    with open(filepath, newline="", encoding="utf-8-sig") as f:
+        preview = [row for _, row in zip(range(25), _csv.reader(f))]
+
+    flat = " ".join(cell.strip() for row in preview for cell in row).lower()
+
+    is_qbo = (
+        "quickbooks" in flat
+        or ("profit and loss" in flat and "total income" in flat)
+        or ("profit and loss" in flat and "net income" in flat)
+    )
+
+    if is_qbo:
+        try:
+            return parse_qbo_csv(filepath)
+        except Exception as e:
+            raise ValueError(
+                f"Detected QuickBooks Online format but could not parse the file: {e}. "
+                "Export your P&L with 'Display columns by: Month' and try again."
+            ) from e
+
+    try:
+        return parse_xero_csv(filepath)
+    except ValueError:
+        raise ValueError(
+            "We couldn't recognize this CSV format. Currently we support Xero and "
+            "QuickBooks Online P&L exports. Try the manual entry tab instead."
+        )
+
+
 def calculate_ratios(data):
     revenue_concentration = data["top_client_revenue"] / data["revenue_current"]
     
