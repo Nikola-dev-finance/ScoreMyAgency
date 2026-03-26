@@ -423,29 +423,24 @@ def _show_landing_page():
                 investing this stability into growth.
             </div>
 
-            <!-- Revenue Concentration -->
             <div style="margin-bottom:10px;">
                 <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:3px;">
                     <span style="font-size:12px; color:#374151;">Revenue Concentration</span>
-                    <span style="font-size:12px; font-weight:700; color:#2E7D32;">10/10 &nbsp;·&nbsp; 20.0% &nbsp;·&nbsp; Top 78%</span>
+                    <span style="font-size:12px; font-weight:700; color:#2E7D32;">10/10 &nbsp;&#183;&nbsp; 20.0% &nbsp;&#183;&nbsp; Top 78%</span>
                 </div>
                 <div style="background:#e5e7eb; border-radius:999px; height:6px; overflow:hidden;">
                     <div style="width:100%; height:100%; background:linear-gradient(90deg,#4caf50,#2E7D32); border-radius:999px;"></div>
                 </div>
             </div>
-
-            <!-- Days Sales Outstanding -->
             <div style="margin-bottom:10px;">
                 <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:3px;">
                     <span style="font-size:12px; color:#374151;">Days Sales Outstanding</span>
-                    <span style="font-size:12px; font-weight:700; color:#2E7D32;">10/10 &nbsp;·&nbsp; 19.4 days &nbsp;·&nbsp; Top 82%</span>
+                    <span style="font-size:12px; font-weight:700; color:#2E7D32;">10/10 &nbsp;&#183;&nbsp; 19.4 days &nbsp;&#183;&nbsp; Top 82%</span>
                 </div>
                 <div style="background:#e5e7eb; border-radius:999px; height:6px; overflow:hidden;">
                     <div style="width:100%; height:100%; background:linear-gradient(90deg,#4caf50,#2E7D32); border-radius:999px;"></div>
                 </div>
             </div>
-
-            <!-- Cash Runway -->
             <div style="margin-bottom:12px;">
                 <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:3px;">
                     <span style="font-size:12px; color:#374151;">Cash Runway</span>
