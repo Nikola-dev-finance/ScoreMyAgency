@@ -414,48 +414,32 @@ def _show_landing_page():
                 <div>
                     <div style="font-size:11px; color:#666; font-weight:600;
                                 letter-spacing:1px; text-transform:uppercase;">Financial Health Score</div>
-                    <div style="font-size:18px; font-weight:700; color:#2E7D32;">Healthy ✓</div>
+                    <div style="font-size:18px; font-weight:700; color:#2E7D32;">Healthy &#10003;</div>
                 </div>
             </div>
             <div style="font-size:12px; color:#374151; background:#f1f5f9;
-                        border-left:3px solid #2C3E7A; padding:8px 10px; border-radius:3px; margin-bottom:14px;">
-                <strong>Diagnosis:</strong> Strong fundamentals across the board — focus on
+                        border-left:3px solid #2C3E7A; padding:8px 10px; border-radius:3px; margin-bottom:4px;">
+                <strong>Diagnosis:</strong> Strong fundamentals across the board &#8212; focus on
                 investing this stability into growth.
-            </div>
-
-            <div style="margin-bottom:10px;">
-                <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:3px;">
-                    <span style="font-size:12px; color:#374151;">Revenue Concentration</span>
-                    <span style="font-size:12px; font-weight:700; color:#2E7D32;">10/10 &nbsp;&#183;&nbsp; 20.0% &nbsp;&#183;&nbsp; Top 78%</span>
-                </div>
-                <div style="background:#e5e7eb; border-radius:999px; height:6px; overflow:hidden;">
-                    <div style="width:100%; height:100%; background:linear-gradient(90deg,#4caf50,#2E7D32); border-radius:999px;"></div>
-                </div>
-            </div>
-            <div style="margin-bottom:10px;">
-                <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:3px;">
-                    <span style="font-size:12px; color:#374151;">Days Sales Outstanding</span>
-                    <span style="font-size:12px; font-weight:700; color:#2E7D32;">10/10 &nbsp;&#183;&nbsp; 19.4 days &nbsp;&#183;&nbsp; Top 82%</span>
-                </div>
-                <div style="background:#e5e7eb; border-radius:999px; height:6px; overflow:hidden;">
-                    <div style="width:100%; height:100%; background:linear-gradient(90deg,#4caf50,#2E7D32); border-radius:999px;"></div>
-                </div>
-            </div>
-            <div style="margin-bottom:12px;">
-                <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:3px;">
-                    <span style="font-size:12px; color:#374151;">Cash Runway</span>
-                    <span style="font-size:12px; font-weight:700; color:#e67e22;">7/10 &nbsp;·&nbsp; 5.4 months &nbsp;·&nbsp; Top 71%</span>
-                </div>
-                <div style="background:#e5e7eb; border-radius:999px; height:6px; overflow:hidden;">
-                    <div style="width:70%; height:100%; background:linear-gradient(90deg,#f59e0b,#e67e22); border-radius:999px;"></div>
-                </div>
-            </div>
-
-            <div style="border-top:1px solid #e5e7eb; padding-top:10px;">
-                <span style="color:#9ca3af; font-size:12px;">+ 3 more ratios, AI findings &amp; actions in full report</span>
             </div>
         </div>
         """, unsafe_allow_html=True)
+
+        pc1, pc2, pc3 = st.columns(3)
+        with pc1:
+            st.caption("Revenue Concentration")
+            st.progress(1.0)
+            st.markdown("**10/10** · 20.0% · Top 88%")
+        with pc2:
+            st.caption("Days Sales Outstanding")
+            st.progress(1.0)
+            st.markdown("**10/10** · 19.4 days · Top 77%")
+        with pc3:
+            st.caption("Cash Runway")
+            st.progress(0.7)
+            st.markdown("**7/10** · 5.4 months · Top 88%")
+
+        st.caption("+ 3 more ratios, AI findings & actions in full report")
 
     with col_dl:
         st.markdown(
