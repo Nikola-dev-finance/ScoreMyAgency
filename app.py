@@ -118,6 +118,7 @@ h1, h2, h3 {
     background-color: #ffffff !important;
     border-color: #e4ddd5 !important;
     border-radius: 10px !important;
+    color: #12100e !important;
 }
 [data-baseweb="input"]:focus-within {
     border-color: #0f766e !important;
@@ -132,6 +133,15 @@ h1, h2, h3 {
     background-color: #ffffff !important;
     border-color: #e4ddd5 !important;
     border-radius: 10px !important;
+}
+/* ── Input text color (prevents white-on-white) ── */
+.stNumberInput input,
+.stTextInput input,
+input[type="number"],
+input[type="text"],
+textarea {
+    color: #12100e !important;
+    -webkit-text-fill-color: #12100e !important;
 }
 
 /* ── File uploader ── */
