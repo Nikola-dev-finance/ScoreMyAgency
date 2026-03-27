@@ -8,7 +8,6 @@ from pipeline import (parse_financial_csv, calculate_ratios,
 
 st.set_page_config(
     page_title="ScoreMyAgency — Financial Health Score for Digital Agencies",
-    page_icon="📊",
     layout="wide",
 )
 
@@ -26,20 +25,31 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap');
 
-/* ── Typography ── */
-html, body, [class*="css"] {
+/* ── Base ── */
+html, body, .stApp, [class*="css"] {
     font-family: 'DM Sans', system-ui, sans-serif !important;
+    color: #4a4540 !important;
 }
+.stApp {
+    background-color: #f8f7f4 !important;
+}
+[data-testid="stAppViewContainer"],
+[data-testid="stMain"],
+[data-testid="block-container"] {
+    background-color: #f8f7f4 !important;
+}
+
+/* ── Headings ── */
 .stMarkdown h1, .stMarkdown h2, .stMarkdown h3,
 h1, h2, h3 {
     font-family: 'Instrument Serif', Georgia, serif !important;
-    color: #ffffff !important;
+    color: #12100e !important;
 }
 
 /* ── Hide Streamlit chrome ── */
 #MainMenu, footer { visibility: hidden; }
 
-/* ── Buttons: replace default red with teal ── */
+/* ── Buttons: teal primary ── */
 .stButton > button,
 .stDownloadButton > button,
 .stFormSubmitButton > button {
@@ -50,6 +60,7 @@ h1, h2, h3 {
     font-family: 'DM Sans', system-ui, sans-serif !important;
     font-weight: 600 !important;
     transition: background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease !important;
+    box-shadow: 0 1px 3px rgba(15,118,110,0.25), inset 0 1px 0 rgba(255,255,255,0.1) !important;
 }
 .stButton > button:hover,
 .stDownloadButton > button:hover,
@@ -63,39 +74,71 @@ h1, h2, h3 {
     transform: translateY(0) !important;
 }
 
+/* ── Back button (ghost style) ── */
+.back-btn-wrap a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.45rem 1.1rem;
+    background: #ffffff;
+    border: 1px solid #e4ddd5;
+    border-radius: 10px;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #4a4540 !important;
+    text-decoration: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+.back-btn-wrap a:hover {
+    border-color: #bbb5ae;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
 /* ── Tabs ── */
 [data-baseweb="tab"] {
     font-family: 'DM Sans', system-ui, sans-serif !important;
     font-weight: 500 !important;
     color: #9b9488 !important;
+    background: transparent !important;
 }
 [aria-selected="true"][data-baseweb="tab"] {
-    color: #0f766e !important;
+    color: #12100e !important;
 }
 [data-baseweb="tab-highlight"] {
     background-color: #0f766e !important;
 }
 [data-baseweb="tab-border"] {
-    background-color: #1e2330 !important;
+    background-color: #e4ddd5 !important;
 }
 
-/* ── Text inputs ── */
-[data-baseweb="input"] {
+/* ── Text & number inputs ── */
+[data-baseweb="input"],
+[data-baseweb="base-input"] {
+    background-color: #ffffff !important;
+    border-color: #e4ddd5 !important;
     border-radius: 10px !important;
-    border-color: #1e2330 !important;
 }
 [data-baseweb="input"]:focus-within {
     border-color: #0f766e !important;
     box-shadow: 0 0 0 1px #0f766e !important;
 }
 [data-testid="stNumberInput"] > div {
+    background-color: #ffffff !important;
+    border-color: #e4ddd5 !important;
+    border-radius: 10px !important;
+}
+[data-testid="stTextInput"] > div > div {
+    background-color: #ffffff !important;
+    border-color: #e4ddd5 !important;
     border-radius: 10px !important;
 }
 
 /* ── File uploader ── */
 [data-testid="stFileUploadDropzone"] {
+    background-color: #ffffff !important;
+    border-color: #e4ddd5 !important;
     border-radius: 10px !important;
-    border-color: #1e2330 !important;
 }
 [data-testid="stFileUploadDropzone"]:hover {
     border-color: #0f766e !important;
@@ -108,11 +151,21 @@ h1, h2, h3 {
 
 /* ── Metric cards ── */
 [data-testid="stMetric"] {
-    background: #161b22 !important;
-    border: 1px solid #1e2330 !important;
+    background: #ffffff !important;
+    border: 1px solid #e4ddd5 !important;
     border-radius: 16px !important;
     padding: 16px !important;
 }
+
+/* ── Selectbox ── */
+[data-baseweb="select"] > div {
+    background-color: #ffffff !important;
+    border-color: #e4ddd5 !important;
+    border-radius: 10px !important;
+}
+
+/* ── Dividers ── */
+hr { border-color: #e4ddd5 !important; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -270,8 +323,8 @@ def _render_results():
 
     if risk_summary:
         st.markdown(
-            f"<div style='background:#F5F5F5; border-left:4px solid #2C3E7A; border-radius:4px; "
-            f"padding:12px 16px; margin:8px 0; font-size:15px; color:#333;'>"
+            f"<div style='background:#f1ede8; border-left:4px solid #0f766e; border-radius:8px; "
+            f"padding:12px 16px; margin:8px 0; font-size:15px; color:#4a4540;'>"
             f"<strong>Diagnosis:</strong> {risk_summary}</div>",
             unsafe_allow_html=True,
         )
@@ -331,7 +384,7 @@ def _render_results():
     # --- Email capture ---
     st.markdown("<div style='height:16px;'/>", unsafe_allow_html=True)
     st.markdown(
-        "<div style='background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; "
+        "<div style='background:#ffffff; border:1px solid #e4ddd5; border-radius:16px; "
         "padding:20px 24px;'>",
         unsafe_allow_html=True,
     )
@@ -381,43 +434,46 @@ def _show_landing_page():
     st.markdown("""
     <style>
     .step-card {
-        background: #161b22; border: 1px solid #1e2330;
-        border-radius: 12px; padding: 24px 20px; text-align: center; height: 100%;
+        background: #ffffff; border: 1px solid #e4ddd5;
+        border-radius: 16px; padding: 28px 24px; text-align: center; height: 100%;
         transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
     .step-card:hover {
         border-color: #0f766e;
-        box-shadow: 0 4px 20px rgba(15, 118, 110, 0.15);
+        box-shadow: 0 4px 20px rgba(15, 118, 110, 0.1);
     }
     .step-num {
-        display: inline-block; background: #0f766e; color: white;
-        font-size: 13px; font-weight: 700; border-radius: 50%;
-        width: 28px; height: 28px; line-height: 28px; margin-bottom: 12px;
+        display: inline-flex; align-items: center; justify-content: center;
+        background: rgba(15,118,110,0.1); color: #0f766e;
+        font-family: 'Instrument Serif', Georgia, serif;
+        font-size: 15px; font-weight: 400; border-radius: 50%;
+        width: 32px; height: 32px; margin-bottom: 14px;
     }
-    .step-title { font-size: 15px; font-weight: 700; color: #f1f5f9; margin: 0 0 6px; }
-    .step-body  { font-size: 13px; color: #94a3b8; line-height: 1.5; margin: 0; }
+    .step-title {
+        font-family: 'Instrument Serif', Georgia, serif;
+        font-size: 16px; font-weight: 400; color: #12100e; margin: 0 0 8px;
+    }
+    .step-body  { font-size: 13px; color: #9b9488; line-height: 1.6; margin: 0; }
     .preview-card {
-        background: #f8fafc; border: 1px solid #e2e8f0;
-        border-radius: 12px; padding: 20px 24px; margin-bottom: 8px;
+        background: #ffffff; border: 1px solid #e4ddd5;
+        border-radius: 16px; padding: 20px 24px; margin-bottom: 8px;
     }
     .preview-score {
         display: flex; align-items: center; gap: 20px;
-        background: #E8F5E9; border-radius: 8px; padding: 16px 20px; margin-bottom: 12px;
+        background: #f0fdf9; border: 1px solid #ccfbf1;
+        border-radius: 10px; padding: 16px 20px; margin-bottom: 12px;
     }
     .preview-ratio-row {
         display: flex; justify-content: space-between; align-items: center;
-        padding: 6px 0; border-bottom: 1px solid #f1f5f9; font-size: 13px;
-    }
-    .proof-box {
-        background: #1a2332; color: white; border-radius: 12px;
-        padding: 28px 32px; text-align: center; margin-top: 8px;
+        padding: 6px 0; border-bottom: 1px solid #f1ede8; font-size: 13px;
     }
     .proof-stat {
-        font-size: 32px; font-weight: 800; color: #60a5fa; margin-bottom: 4px;
+        font-family: 'Instrument Serif', Georgia, serif;
+        font-size: 2.2rem; font-weight: 400; color: #0f766e; margin-bottom: 4px;
     }
-    .proof-label { font-size: 13px; color: #94a3b8; }
+    .proof-label { font-size: 13px; color: #9b9488; }
     .divider-line {
-        border: none; border-top: 1px solid #e2e8f0; margin: 40px 0;
+        border: none; border-top: 1px solid #e4ddd5; margin: 40px 0;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -425,21 +481,23 @@ def _show_landing_page():
     # ── Hero ──────────────────────────────────────────────────────────────────
     st.markdown("""
     <div style="
-        background: linear-gradient(135deg, #0E1117 0%, #1a1a2e 100%);
-        border-radius: 16px;
-        padding: 72px 24px 60px;
+        background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(15,118,110,0.08) 0%, transparent 60%),
+                    #f8f7f4;
+        border: 1px solid #e4ddd5;
+        border-radius: 24px;
+        padding: 80px 24px 68px;
         text-align: center;
         margin-bottom: 8px;
     ">
         <h1 style="
             font-family: 'Instrument Serif', Georgia, serif;
-            font-size: 2.5rem; font-weight: 400; color: #ffffff;
-            line-height: 1.2; margin: 0 auto 20px; max-width: 700px;
-        ">Know your agency's <em style="font-style:italic; color:#14b8a6;">real financial health</em> in 2 minutes</h1>
+            font-size: 2.8rem; font-weight: 400; color: #12100e;
+            line-height: 1.15; margin: 0 auto 20px; max-width: 700px;
+        ">Know your agency's <em style="font-style:italic; color:#0f766e;">real financial health</em> in 2 minutes</h1>
         <p style="
             font-family: 'DM Sans', system-ui, sans-serif;
-            font-size: 1.05rem; color: #9b9488; line-height: 1.7;
-            max-width: 560px; margin: 0 auto 36px; font-weight: 300;
+            font-size: 1.05rem; color: #9b9488; line-height: 1.75;
+            max-width: 520px; margin: 0 auto 36px; font-weight: 300;
         ">Upload your Xero P&amp;L or enter your numbers manually. Get a score,
         peer benchmarks, and specific actions to improve — powered by AI.</p>
     </div>
@@ -456,7 +514,7 @@ def _show_landing_page():
     # ── How it works ──────────────────────────────────────────────────────────
     st.markdown(
         "<h2 style='text-align:center; font-size:24px; font-weight:700; "
-        "color:#e6e1dc; margin-bottom:24px;'>How it works</h2>",
+        "color:#12100e; margin-bottom:24px;'>How it works</h2>",
         unsafe_allow_html=True,
     )
 
@@ -494,7 +552,7 @@ def _show_landing_page():
     # ── Sample report ─────────────────────────────────────────────────────────
     st.markdown(
         "<h2 style='text-align:center; font-size:24px; font-weight:700; "
-        "color:#e6e1dc; margin-bottom:6px;'>See a sample report</h2>",
+        "color:#12100e; margin-bottom:6px;'>See a sample report</h2>",
         unsafe_allow_html=True,
     )
     st.markdown(
@@ -516,8 +574,8 @@ def _show_landing_page():
                     <div style="font-size:18px; font-weight:700; color:#2E7D32;">Healthy &#10003;</div>
                 </div>
             </div>
-            <div style="font-size:12px; color:#374151; background:#f1f5f9;
-                        border-left:3px solid #2C3E7A; padding:8px 10px; border-radius:3px; margin-bottom:4px;">
+            <div style="font-size:12px; color:#4a4540; background:#f1ede8;
+                        border-left:3px solid #0f766e; padding:8px 10px; border-radius:6px; margin-bottom:4px;">
                 <strong>Diagnosis:</strong> Strong fundamentals across the board &#8212; focus on
                 investing this stability into growth.
             </div>
@@ -574,7 +632,7 @@ def _show_landing_page():
     # ── Social proof ──────────────────────────────────────────────────────────
     st.markdown(
         "<h2 style='text-align:center; font-size:24px; font-weight:700; "
-        "color:#e6e1dc; margin-bottom:24px;'>Built for digital agencies</h2>",
+        "color:#12100e; margin-bottom:24px;'>Built for digital agencies</h2>",
         unsafe_allow_html=True,
     )
 
@@ -583,21 +641,21 @@ def _show_landing_page():
         st.markdown("""
         <div style="text-align:center; padding:20px 12px;">
             <div class="proof-stat">50+</div>
-            <div class="proof-label" style="color:#6b7280; font-size:14px;">agency benchmarks from<br>industry research and public data</div>
+            <div class="proof-label" style="color:#9b9488; font-size:14px;">agency benchmarks from<br>industry research and public data</div>
         </div>
         """, unsafe_allow_html=True)
     with sp2:
         st.markdown("""
         <div style="text-align:center; padding:20px 12px;">
-            <div class="proof-stat" style="color:#1a2332;">6</div>
-            <div class="proof-label" style="color:#6b7280; font-size:14px;">financial ratios<br>tailored to agencies</div>
+            <div class="proof-stat" style="color:#0f766e;">6</div>
+            <div class="proof-label" style="color:#9b9488; font-size:14px;">financial ratios<br>tailored to agencies</div>
         </div>
         """, unsafe_allow_html=True)
     with sp3:
         st.markdown("""
         <div style="text-align:center; padding:20px 12px;">
-            <div class="proof-stat" style="color:#1a2332;">&lt;2 min</div>
-            <div class="proof-label" style="color:#6b7280; font-size:14px;">from data upload<br>to full AI report</div>
+            <div class="proof-stat" style="color:#0f766e;">&lt;2 min</div>
+            <div class="proof-label" style="color:#9b9488; font-size:14px;">from data upload<br>to full AI report</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -622,14 +680,32 @@ def _show_landing_page():
 # Scoring tool
 # ---------------------------------------------------------------------------
 def _show_scoring_tool():
-    # Back to home
-    if st.button("← Back to home", key="btn_back"):
-        st.session_state.show_tool = False
-        st.session_state.pop("_results", None)
-        st.rerun()
+    # Back to home — link to external landing page if arrived via ?tool=true, else toggle session state
+    if st.query_params.get("tool") == "true":
+        # TODO: Change to https://scoremyagency.com when domain is live
+        _back_url = "https://scoremyagency.streamlit.app"
+        st.markdown(
+            f"<div class='back-btn-wrap'><a href='{_back_url}'>← Back to home</a></div>",
+            unsafe_allow_html=True,
+        )
+    else:
+        if st.button("← Back to home", key="btn_back"):
+            st.session_state.show_tool = False
+            st.session_state.pop("_results", None)
+            st.rerun()
 
-    st.title("📊 ScoreMyAgency")
-    st.markdown("Find out if your agency's finances are healthy — in 60 seconds.")
+    st.markdown(
+        "<h1 style='font-family:\"Instrument Serif\",Georgia,serif; font-size:2rem; "
+        "font-weight:400; color:#12100e; margin:12px 0 4px;'>"
+        "Score<em style='font-style:italic; color:#0f766e;'>My</em>Agency</h1>",
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        "<p style='font-family:\"DM Sans\",system-ui,sans-serif; font-size:1rem; "
+        "color:#9b9488; font-weight:300; margin:0 0 20px;'>"
+        "Find out if your agency's finances are healthy — in 60 seconds.</p>",
+        unsafe_allow_html=True,
+    )
 
     business_name = st.text_input("Agency name", placeholder="e.g. Mosaic Digital")
 
