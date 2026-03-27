@@ -19,6 +19,103 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+# ---------------------------------------------------------------------------
+# Global CSS — matches landing/index.html design system
+# ---------------------------------------------------------------------------
+st.markdown("""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap');
+
+/* ── Typography ── */
+html, body, [class*="css"] {
+    font-family: 'DM Sans', system-ui, sans-serif !important;
+}
+.stMarkdown h1, .stMarkdown h2, .stMarkdown h3,
+h1, h2, h3 {
+    font-family: 'Instrument Serif', Georgia, serif !important;
+    color: #ffffff !important;
+}
+
+/* ── Hide Streamlit chrome ── */
+#MainMenu, footer { visibility: hidden; }
+
+/* ── Buttons: replace default red with teal ── */
+.stButton > button,
+.stDownloadButton > button,
+.stFormSubmitButton > button {
+    background: #0f766e !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 10px !important;
+    font-family: 'DM Sans', system-ui, sans-serif !important;
+    font-weight: 600 !important;
+    transition: background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease !important;
+}
+.stButton > button:hover,
+.stDownloadButton > button:hover,
+.stFormSubmitButton > button:hover {
+    background: #0a5e58 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 20px rgba(15,118,110,0.3) !important;
+}
+.stButton > button:active,
+.stDownloadButton > button:active {
+    transform: translateY(0) !important;
+}
+
+/* ── Tabs ── */
+[data-baseweb="tab"] {
+    font-family: 'DM Sans', system-ui, sans-serif !important;
+    font-weight: 500 !important;
+    color: #9b9488 !important;
+}
+[aria-selected="true"][data-baseweb="tab"] {
+    color: #0f766e !important;
+}
+[data-baseweb="tab-highlight"] {
+    background-color: #0f766e !important;
+}
+[data-baseweb="tab-border"] {
+    background-color: #1e2330 !important;
+}
+
+/* ── Text inputs ── */
+[data-baseweb="input"] {
+    border-radius: 10px !important;
+    border-color: #1e2330 !important;
+}
+[data-baseweb="input"]:focus-within {
+    border-color: #0f766e !important;
+    box-shadow: 0 0 0 1px #0f766e !important;
+}
+[data-testid="stNumberInput"] > div {
+    border-radius: 10px !important;
+}
+
+/* ── File uploader ── */
+[data-testid="stFileUploadDropzone"] {
+    border-radius: 10px !important;
+    border-color: #1e2330 !important;
+}
+[data-testid="stFileUploadDropzone"]:hover {
+    border-color: #0f766e !important;
+}
+
+/* ── Progress bars ── */
+[data-testid="stProgress"] > div > div > div > div {
+    background-color: #0f766e !important;
+}
+
+/* ── Metric cards ── */
+[data-testid="stMetric"] {
+    background: #161b22 !important;
+    border: 1px solid #1e2330 !important;
+    border-radius: 16px !important;
+    padding: 16px !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
 _init_db()
 seed_initial_benchmarks()
 
@@ -284,16 +381,16 @@ def _show_landing_page():
     st.markdown("""
     <style>
     .step-card {
-        background: #16213e; border: 1px solid #333;
+        background: #161b22; border: 1px solid #1e2330;
         border-radius: 12px; padding: 24px 20px; text-align: center; height: 100%;
         transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
     .step-card:hover {
-        border-color: #FF4B4B;
-        box-shadow: 0 4px 20px rgba(255, 75, 75, 0.12);
+        border-color: #0f766e;
+        box-shadow: 0 4px 20px rgba(15, 118, 110, 0.15);
     }
     .step-num {
-        display: inline-block; background: #FF4B4B; color: white;
+        display: inline-block; background: #0f766e; color: white;
         font-size: 13px; font-weight: 700; border-radius: 50%;
         width: 28px; height: 28px; line-height: 28px; margin-bottom: 12px;
     }
@@ -335,12 +432,14 @@ def _show_landing_page():
         margin-bottom: 8px;
     ">
         <h1 style="
-            font-size: 2.5rem; font-weight: 700; color: #ffffff;
+            font-family: 'Instrument Serif', Georgia, serif;
+            font-size: 2.5rem; font-weight: 400; color: #ffffff;
             line-height: 1.2; margin: 0 auto 20px; max-width: 700px;
-        ">Know your agency's real financial health in 2 minutes</h1>
+        ">Know your agency's <em style="font-style:italic; color:#14b8a6;">real financial health</em> in 2 minutes</h1>
         <p style="
-            font-size: 1.05rem; color: #999999; line-height: 1.7;
-            max-width: 560px; margin: 0 auto 36px;
+            font-family: 'DM Sans', system-ui, sans-serif;
+            font-size: 1.05rem; color: #9b9488; line-height: 1.7;
+            max-width: 560px; margin: 0 auto 36px; font-weight: 300;
         ">Upload your Xero P&amp;L or enter your numbers manually. Get a score,
         peer benchmarks, and specific actions to improve — powered by AI.</p>
     </div>
@@ -357,7 +456,7 @@ def _show_landing_page():
     # ── How it works ──────────────────────────────────────────────────────────
     st.markdown(
         "<h2 style='text-align:center; font-size:24px; font-weight:700; "
-        "color:#1a2332; margin-bottom:24px;'>How it works</h2>",
+        "color:#e6e1dc; margin-bottom:24px;'>How it works</h2>",
         unsafe_allow_html=True,
     )
 
@@ -395,11 +494,11 @@ def _show_landing_page():
     # ── Sample report ─────────────────────────────────────────────────────────
     st.markdown(
         "<h2 style='text-align:center; font-size:24px; font-weight:700; "
-        "color:#1a2332; margin-bottom:6px;'>See a sample report</h2>",
+        "color:#e6e1dc; margin-bottom:6px;'>See a sample report</h2>",
         unsafe_allow_html=True,
     )
     st.markdown(
-        "<p style='text-align:center; color:#6b7280; font-size:14px; margin-bottom:24px;'>"
+        "<p style='text-align:center; color:#9b9488; font-size:14px; margin-bottom:24px;'>"
         "Here's what you get for a healthy agency. Download the full PDF below.</p>",
         unsafe_allow_html=True,
     )
@@ -444,7 +543,7 @@ def _show_landing_page():
     with col_dl:
         st.markdown(
             "<div style='padding:16px 0;'>"
-            "<p style='font-size:14px; color:#374151; margin-bottom:16px;'>"
+            "<p style='font-size:14px; color:#9b9488; margin-bottom:16px;'>"
             "Full report includes all 6 ratios, percentile benchmarks, AI-written findings, "
             "and action items — in a branded PDF.</p>"
             "</div>",
@@ -475,7 +574,7 @@ def _show_landing_page():
     # ── Social proof ──────────────────────────────────────────────────────────
     st.markdown(
         "<h2 style='text-align:center; font-size:24px; font-weight:700; "
-        "color:#1a2332; margin-bottom:24px;'>Built for digital agencies</h2>",
+        "color:#e6e1dc; margin-bottom:24px;'>Built for digital agencies</h2>",
         unsafe_allow_html=True,
     )
 
@@ -744,7 +843,7 @@ def _show_admin():
 # ---------------------------------------------------------------------------
 if st.query_params.get("admin") == "true":
     _show_admin()
-elif st.session_state.get("show_tool", False):
+elif st.query_params.get("tool") == "true" or st.session_state.get("show_tool", False):
     _show_scoring_tool()
 else:
     _show_landing_page()
