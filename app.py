@@ -692,10 +692,8 @@ def _show_landing_page():
 def _show_scoring_tool():
     # Back to home — link to external landing page if arrived via ?tool=true, else toggle session state
     if st.query_params.get("tool") == "true":
-        # TODO: Change to https://scoremyagency.com when domain is live
-        _back_url = "https://scoremyagency.streamlit.app"
         st.markdown(
-            f"<div class='back-btn-wrap'><a href='{_back_url}'>← Back to home</a></div>",
+            '<a href="https://scoremyagency.com" target="_self" style="display:inline-block; padding:0.5rem 1.2rem; border:1px solid #e4ddd5; border-radius:10px; color:#4a4540; text-decoration:none; font-family:DM Sans,sans-serif; font-weight:500;">← Back to home</a>',
             unsafe_allow_html=True,
         )
     else:
