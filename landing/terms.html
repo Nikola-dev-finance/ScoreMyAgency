@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms of Use — ScoreMyAgency</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #f8f7f4;
+      --bg-dark:   #0e1117;
+      --surface:   #ffffff;
+      --border:    #e4ddd5;
+      --muted:     #9b9488;
+      --body:      #4a4540;
+      --heading:   #12100e;
+      --ink:       #1a1714;
+      --teal:      #0f766e;
+      --teal-l:    #14b8a6;
+      --font-serif: 'Instrument Serif', Georgia, serif;
+      --font-sans:  'DM Sans', system-ui, sans-serif;
+      --r: 10px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--body);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 28px; }
+    .prose     { max-width: 720px; margin: 0 auto; padding: 72px 28px 100px; }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 200;
+      background: rgba(248,247,244,0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1120px; margin: 0 auto; padding: 0 28px;
+      height: 64px; display: flex; align-items: center;
+      justify-content: space-between; gap: 24px;
+    }
+    .nav-logo { font-family: var(--font-serif); font-size: 1.2rem; color: var(--ink); }
+    .nav-logo em { font-style: italic; color: var(--teal); }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 0.6rem 1.4rem; border-radius: var(--r);
+      font-family: var(--font-sans); font-size: 0.875rem;
+      font-weight: 600; cursor: pointer; border: none;
+      transition: all 0.18s ease; white-space: nowrap;
+    }
+    .btn-primary { background: var(--teal); color: #fff; box-shadow: 0 1px 3px rgba(15,118,110,0.3); }
+    .btn-primary:hover { background: #0a5e58; transform: translateY(-1px); }
+    .btn-ghost { background: transparent; color: var(--body); border: 1px solid var(--border); }
+    .btn-ghost:hover { border-color: #bbb5ae; }
+
+    /* ── Prose content ── */
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.875rem; color: var(--muted);
+      margin-bottom: 40px; transition: color 0.15s;
+    }
+    .back-link:hover { color: var(--teal); }
+
+    .prose-pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(15,118,110,0.09); border: 1px solid rgba(15,118,110,0.22);
+      border-radius: 999px; padding: 4px 14px;
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--teal); margin-bottom: 16px;
+    }
+    .prose-pill .dot { width: 5px; height: 5px; background: var(--teal-l); border-radius: 50%; }
+
+    .prose h1 {
+      font-family: var(--font-serif); font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 400; color: var(--heading); margin-bottom: 8px; line-height: 1.15;
+    }
+    .prose .updated {
+      font-size: 0.85rem; color: var(--muted); margin-bottom: 48px;
+      padding-bottom: 24px; border-bottom: 1px solid var(--border);
+    }
+    .prose h2 {
+      font-family: var(--font-serif); font-size: 1.25rem; font-weight: 400;
+      color: var(--heading); margin: 36px 0 10px;
+    }
+    .prose p { color: var(--body); font-size: 0.97rem; margin-bottom: 16px; }
+    .prose a { color: var(--teal); text-decoration: underline; text-underline-offset: 3px; }
+    .prose a:hover { color: #0a5e58; }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--bg-dark);
+      border-top: 1px solid #1a2030;
+      padding: 56px 0 36px;
+    }
+    .footer-top {
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 40px; margin-bottom: 48px;
+    }
+    .footer-brand-logo { font-family: var(--font-serif); font-size: 1.15rem; color: #e8e4df; margin-bottom: 12px; }
+    .footer-brand-logo em { font-style: italic; color: var(--teal-l); }
+    .footer-tagline { font-size: 0.83rem; color: #3e4a5c; line-height: 1.65; font-weight: 300; max-width: 220px; }
+    .footer-col-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #3e4a5c; margin-bottom: 16px; }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { font-size: 0.84rem; color: #3e4a5c; transition: color 0.15s; }
+    .footer-links a:hover { color: #8a9ab0; }
+    .footer-bottom { border-top: 1px solid #1a2030; padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .footer-copy { font-size: 0.78rem; color: #2e3748; }
+    .footer-legal { display: flex; gap: 20px; }
+    .footer-legal a { font-size: 0.78rem; color: #2e3748; transition: color 0.15s; }
+    .footer-legal a:hover { color: #5a6478; }
+
+    @media (max-width: 960px) { .footer-top { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 640px) { .footer-top { grid-template-columns: 1fr; } .footer-bottom { flex-direction: column; text-align: center; } }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">Score<em>My</em>Agency</a>
+      <div style="display:flex; gap:12px;">
+        <a href="index.html" class="btn btn-ghost" style="padding:0.5rem 1.3rem; font-size:0.875rem;">← Home</a>
+        <a href="https://scoremyagency.streamlit.app?tool=true" class="btn btn-primary" style="padding:0.5rem 1.3rem; font-size:0.875rem;">Get my score →</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="prose">
+    <a href="index.html" class="back-link">← Back to home</a>
+    <div class="prose-pill"><span class="dot"></span>Legal</div>
+    <h1>Terms of Use</h1>
+    <p class="updated">Last updated: March 2026</p>
+
+    <h2>Not financial advice</h2>
+    <p>ScoreMyAgency is an informational tool. The scores, findings, and recommendations it produces are for general guidance only and do not constitute professional financial, accounting, or legal advice. Do not make major business decisions based solely on the output of this tool. Consult a qualified professional for advice specific to your situation.</p>
+
+    <h2>No guarantees on accuracy</h2>
+    <p>We make no representations about the accuracy, completeness, or fitness for purpose of the benchmark data or scoring methodology. The peer percentiles are derived from a limited dataset and will improve in accuracy as more agencies use the tool. Results will vary depending on your inputs and the composition of the benchmark pool at the time of your analysis.</p>
+
+    <h2>Use at your own discretion</h2>
+    <p>The tool is provided free of charge, as-is, with no warranty expressed or implied. We are not liable for any business decisions, financial losses, or other outcomes arising from your use of this tool or reliance on its output. You use it entirely at your own risk.</p>
+
+    <h2>Modifications and availability</h2>
+    <p>We reserve the right to modify, update, or discontinue ScoreMyAgency at any time without notice — including changes to the scoring methodology, benchmark data, or available features. We may also update these terms at any time. Continued use of the tool constitutes acceptance of any updated terms.</p>
+
+    <h2>Intellectual property</h2>
+    <p>The ScoreMyAgency scoring methodology, software, and content are the property of their respective creators. The source code is available on <a href="https://github.com/Nikola-dev-finance/ScoreMyAgency" target="_blank" rel="noopener">GitHub</a> under its stated license.</p>
+
+    <h2>Contact</h2>
+    <p>Questions about these terms: <a href="mailto:hello@scoremyagency.com">hello@scoremyagency.com</a>.</p>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-top">
+        <div>
+          <div class="footer-brand-logo">Score<em>My</em>Agency</div>
+          <p class="footer-tagline">Free financial health scoring for digital agencies. Know your number in 2 minutes.</p>
+        </div>
+        <div>
+          <div class="footer-col-title">Product</div>
+          <ul class="footer-links">
+            <li><a href="index.html#how">How it works</a></li>
+            <li><a href="index.html#ratios">Features</a></li>
+            <li><a href="index.html#sample">Sample report</a></li>
+            <li><a href="https://scoremyagency.streamlit.app?tool=true">Launch app</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Resources</div>
+          <ul class="footer-links">
+            <li><a href="index.html#faq">FAQ</a></li>
+            <li><a href="methodology.html">Methodology</a></li>
+            <li><a href="https://github.com/Nikola-dev-finance/ScoreMyAgency" target="_blank" rel="noopener">GitHub</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Company</div>
+          <ul class="footer-links">
+            <li><a href="mailto:hello@scoremyagency.com">Contact</a></li>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Use</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">© 2025 ScoreMyAgency. Built by Nikola.</span>
+        <div class="footer-legal">
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+          <a href="mailto:hello@scoremyagency.com">hello@scoremyagency.com</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

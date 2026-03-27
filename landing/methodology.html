@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Methodology — ScoreMyAgency</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #f8f7f4;
+      --bg-dark:   #0e1117;
+      --surface:   #ffffff;
+      --border:    #e4ddd5;
+      --muted:     #9b9488;
+      --body:      #4a4540;
+      --heading:   #12100e;
+      --ink:       #1a1714;
+      --teal:      #0f766e;
+      --teal-l:    #14b8a6;
+      --teal-glow: rgba(15,118,110,0.09);
+      --green:     #16a34a;
+      --amber:     #d97706;
+      --red:       #dc2626;
+      --font-serif: 'Instrument Serif', Georgia, serif;
+      --font-sans:  'DM Sans', system-ui, sans-serif;
+      --r: 10px;
+      --r-lg: 16px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--body);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 28px; }
+    .prose     { max-width: 800px; margin: 0 auto; padding: 72px 28px 100px; }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 200;
+      background: rgba(248,247,244,0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1120px; margin: 0 auto; padding: 0 28px;
+      height: 64px; display: flex; align-items: center;
+      justify-content: space-between; gap: 24px;
+    }
+    .nav-logo { font-family: var(--font-serif); font-size: 1.2rem; color: var(--ink); }
+    .nav-logo em { font-style: italic; color: var(--teal); }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 0.6rem 1.4rem; border-radius: var(--r);
+      font-family: var(--font-sans); font-size: 0.875rem;
+      font-weight: 600; cursor: pointer; border: none;
+      transition: all 0.18s ease; white-space: nowrap;
+    }
+    .btn-primary { background: var(--teal); color: #fff; box-shadow: 0 1px 3px rgba(15,118,110,0.3); }
+    .btn-primary:hover { background: #0a5e58; transform: translateY(-1px); }
+    .btn-ghost { background: transparent; color: var(--body); border: 1px solid var(--border); }
+    .btn-ghost:hover { border-color: #bbb5ae; }
+
+    /* ── Prose ── */
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.875rem; color: var(--muted);
+      margin-bottom: 40px; transition: color 0.15s;
+    }
+    .back-link:hover { color: var(--teal); }
+
+    .prose-pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: var(--teal-glow); border: 1px solid rgba(15,118,110,0.22);
+      border-radius: 999px; padding: 4px 14px;
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--teal); margin-bottom: 16px;
+    }
+    .prose-pill .dot { width: 5px; height: 5px; background: var(--teal-l); border-radius: 50%; }
+
+    .prose h1 {
+      font-family: var(--font-serif); font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 400; color: var(--heading); margin-bottom: 16px; line-height: 1.15;
+    }
+    .prose .lead {
+      font-size: 1.05rem; color: var(--muted); font-weight: 300; line-height: 1.75;
+      margin-bottom: 48px; padding-bottom: 32px; border-bottom: 1px solid var(--border);
+    }
+    .prose h2 {
+      font-family: var(--font-serif); font-size: 1.5rem; font-weight: 400;
+      color: var(--heading); margin: 48px 0 12px;
+    }
+    .prose h3 {
+      font-family: var(--font-serif); font-size: 1.1rem; font-weight: 400;
+      color: var(--heading); margin: 28px 0 8px;
+    }
+    .prose p { color: var(--body); font-size: 0.97rem; margin-bottom: 16px; }
+    .prose a { color: var(--teal); text-decoration: underline; text-underline-offset: 3px; }
+    .prose a:hover { color: #0a5e58; }
+
+    /* ── Ratio cards ── */
+    .ratio-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 16px; margin: 24px 0 40px;
+    }
+    .ratio-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 24px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .ratio-card:hover { border-color: var(--teal); box-shadow: 0 4px 16px rgba(15,118,110,0.08); }
+    .ratio-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; gap: 12px; }
+    .ratio-name { font-family: var(--font-serif); font-size: 1.05rem; font-weight: 400; color: var(--heading); }
+    .ratio-weight {
+      display: inline-flex; align-items: center;
+      background: var(--teal-glow); color: var(--teal);
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em;
+      padding: 3px 10px; border-radius: 999px; white-space: nowrap; flex-shrink: 0;
+    }
+    .ratio-bar-wrap { height: 4px; background: var(--border); border-radius: 999px; margin-bottom: 12px; overflow: hidden; }
+    .ratio-bar { height: 100%; background: var(--teal); border-radius: 999px; }
+    .ratio-body { font-size: 0.875rem; color: var(--muted); line-height: 1.6; }
+
+    /* ── Score scale ── */
+    .scale-row {
+      display: flex; gap: 8px; margin: 20px 0 40px; flex-wrap: wrap;
+    }
+    .scale-chip {
+      flex: 1; min-width: 80px; text-align: center;
+      border-radius: var(--r); padding: 14px 8px;
+      border: 1px solid var(--border);
+    }
+    .scale-num { font-family: var(--font-serif); font-size: 1.4rem; font-weight: 400; margin-bottom: 4px; }
+    .scale-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--bg-dark);
+      border-top: 1px solid #1a2030;
+      padding: 56px 0 36px;
+    }
+    .footer-top {
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 40px; margin-bottom: 48px;
+    }
+    .footer-brand-logo { font-family: var(--font-serif); font-size: 1.15rem; color: #e8e4df; margin-bottom: 12px; }
+    .footer-brand-logo em { font-style: italic; color: var(--teal-l); }
+    .footer-tagline { font-size: 0.83rem; color: #3e4a5c; line-height: 1.65; font-weight: 300; max-width: 220px; }
+    .footer-col-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #3e4a5c; margin-bottom: 16px; }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { font-size: 0.84rem; color: #3e4a5c; transition: color 0.15s; }
+    .footer-links a:hover { color: #8a9ab0; }
+    .footer-bottom { border-top: 1px solid #1a2030; padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .footer-copy { font-size: 0.78rem; color: #2e3748; }
+    .footer-legal { display: flex; gap: 20px; }
+    .footer-legal a { font-size: 0.78rem; color: #2e3748; transition: color 0.15s; }
+    .footer-legal a:hover { color: #5a6478; }
+
+    @media (max-width: 960px) { .footer-top { grid-template-columns: 1fr 1fr; } .ratio-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 640px) { .footer-top { grid-template-columns: 1fr; } .footer-bottom { flex-direction: column; text-align: center; } .scale-row { gap: 6px; } }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">Score<em>My</em>Agency</a>
+      <div style="display:flex; gap:12px;">
+        <a href="index.html" class="btn btn-ghost" style="padding:0.5rem 1.3rem; font-size:0.875rem;">← Home</a>
+        <a href="https://scoremyagency.streamlit.app?tool=true" class="btn btn-primary" style="padding:0.5rem 1.3rem; font-size:0.875rem;">Get my score →</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="prose">
+    <a href="index.html" class="back-link">← Back to home</a>
+    <div class="prose-pill"><span class="dot"></span>Methodology</div>
+    <h1>How We Score Your Agency</h1>
+    <p class="lead">The ScoreMyAgency score is a weighted composite of six financial ratios, each chosen because they predict agency survival and growth more reliably than generic accounting metrics. The result is a single 0–100 number that tells you where you stand — and where the risks are hiding.</p>
+
+    <h2>The six ratios</h2>
+    <p>Each ratio is scored independently on a 0–10 scale, then combined using the weights below. The weights reflect how strongly each metric correlates with agency financial health in our benchmark research.</p>
+
+    <div class="ratio-grid">
+      <div class="ratio-card">
+        <div class="ratio-header">
+          <span class="ratio-name">Revenue Concentration</span>
+          <span class="ratio-weight">28%</span>
+        </div>
+        <div class="ratio-bar-wrap"><div class="ratio-bar" style="width:28%;"></div></div>
+        <p class="ratio-body">What percentage of total revenue comes from your single largest client. Over-reliance on one client is the most common reason agencies fail. Below 20% is excellent; above 40% is critical.</p>
+      </div>
+      <div class="ratio-card">
+        <div class="ratio-header">
+          <span class="ratio-name">Days Sales Outstanding</span>
+          <span class="ratio-weight">22%</span>
+        </div>
+        <div class="ratio-bar-wrap"><div class="ratio-bar" style="width:22%;"></div></div>
+        <p class="ratio-body">How long it takes, on average, to collect payment after invoicing. Slow collections cause cash crunches even when revenue looks healthy. Under 30 days is good; over 60 days signals risk.</p>
+      </div>
+      <div class="ratio-card">
+        <div class="ratio-header">
+          <span class="ratio-name">Cash Runway</span>
+          <span class="ratio-weight">20%</span>
+        </div>
+        <div class="ratio-bar-wrap"><div class="ratio-bar" style="width:20%;"></div></div>
+        <p class="ratio-body">How many months your current cash balance would cover at your current expense rate. The 3–6 month zone is healthy — enough buffer for surprises without cash sitting idle.</p>
+      </div>
+      <div class="ratio-card">
+        <div class="ratio-header">
+          <span class="ratio-name">Gross Margin</span>
+          <span class="ratio-weight">15%</span>
+        </div>
+        <div class="ratio-bar-wrap"><div class="ratio-bar" style="width:15%;"></div></div>
+        <p class="ratio-body">Revenue minus direct costs (contractors, software, COGS), expressed as a percentage. Healthy agencies typically run 50–70%. Below 40% leaves almost no room for operating expenses or profit.</p>
+      </div>
+      <div class="ratio-card">
+        <div class="ratio-header">
+          <span class="ratio-name">Expense vs Revenue Growth</span>
+          <span class="ratio-weight">10%</span>
+        </div>
+        <div class="ratio-bar-wrap"><div class="ratio-bar" style="width:10%;"></div></div>
+        <p class="ratio-body">Compares the growth rate of expenses to the growth rate of revenue over the last 3 months. When costs grow faster than revenue, margins compress — an early warning sign worth catching early.</p>
+      </div>
+      <div class="ratio-card">
+        <div class="ratio-header">
+          <span class="ratio-name">Revenue per Employee</span>
+          <span class="ratio-weight">5%</span>
+        </div>
+        <div class="ratio-bar-wrap"><div class="ratio-bar" style="width:5%;"></div></div>
+        <p class="ratio-body">Monthly revenue divided by headcount. A proxy for team efficiency and pricing power. Used primarily for peer comparison — benchmarks are segmented by agency size to ensure a fair comparison.</p>
+      </div>
+    </div>
+
+    <h2>The scoring scale</h2>
+    <p>Each ratio is evaluated against fixed thresholds derived from industry research and produces one of five scores:</p>
+
+    <div class="scale-row">
+      <div class="scale-chip" style="background:#f0fdf4; border-color:#bbf7d0;">
+        <div class="scale-num" style="color:#16a34a;">10</div>
+        <div class="scale-label" style="color:#16a34a;">Excellent</div>
+      </div>
+      <div class="scale-chip" style="background:#f0fdfa; border-color:#99f6e4;">
+        <div class="scale-num" style="color:#0f766e;">7</div>
+        <div class="scale-label" style="color:#0f766e;">Good</div>
+      </div>
+      <div class="scale-chip" style="background:#fffbeb; border-color:#fde68a;">
+        <div class="scale-num" style="color:#d97706;">5</div>
+        <div class="scale-label" style="color:#d97706;">Fair</div>
+      </div>
+      <div class="scale-chip" style="background:#fff7ed; border-color:#fed7aa;">
+        <div class="scale-num" style="color:#ea580c;">3</div>
+        <div class="scale-label" style="color:#ea580c;">Poor</div>
+      </div>
+      <div class="scale-chip" style="background:#fef2f2; border-color:#fecaca;">
+        <div class="scale-num" style="color:#dc2626;">0</div>
+        <div class="scale-label" style="color:#dc2626;">Critical</div>
+      </div>
+    </div>
+
+    <p>The composite score is the weighted average of all six ratio scores, scaled to 0–100. A score of 70+ is Healthy, 40–69 is Struggling, and below 40 is Critical.</p>
+
+    <h2>Benchmark data and percentiles</h2>
+    <p>Peer percentile rankings compare your ratios against a pool of agency data drawn from:</p>
+    <p><strong>Industry research</strong> — publicly available financial benchmarking studies for digital and creative agencies, including data from industry associations and SaaS-specific agency benchmarks.<br><strong>Public data</strong> — disclosed financials from publicly listed agency groups and consultancies.<br><strong>Anonymized submissions</strong> — fully anonymized ratio scores from agencies who have used the tool. No raw financial data, agency names, or identifying information is ever included in the benchmark pool.</p>
+    <p>Percentiles are segmented by agency size (small: ≤10 employees, medium: 11–30, large: 31+) to ensure you're comparing against relevant peers.</p>
+    <p style="background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--teal); border-radius: 8px; padding: 14px 18px; font-size: 0.9rem;">Percentile accuracy improves as more agencies use the tool. The more submissions in the pool, the more meaningful the comparison becomes.</p>
+
+    <h2>Limitations</h2>
+    <p>This tool is designed for digital agencies (marketing, SEO, web, design, content, and similar service businesses). The ratios and benchmarks may not be meaningful for product companies, SaaS businesses, or non-service firms. The score is a snapshot based on the data you enter — it does not account for seasonal patterns, growth stage, or strategic context. Use it as a starting point for conversations, not a definitive verdict.</p>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-top">
+        <div>
+          <div class="footer-brand-logo">Score<em>My</em>Agency</div>
+          <p class="footer-tagline">Free financial health scoring for digital agencies. Know your number in 2 minutes.</p>
+        </div>
+        <div>
+          <div class="footer-col-title">Product</div>
+          <ul class="footer-links">
+            <li><a href="index.html#how">How it works</a></li>
+            <li><a href="index.html#ratios">Features</a></li>
+            <li><a href="index.html#sample">Sample report</a></li>
+            <li><a href="https://scoremyagency.streamlit.app?tool=true">Launch app</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Resources</div>
+          <ul class="footer-links">
+            <li><a href="index.html#faq">FAQ</a></li>
+            <li><a href="methodology.html">Methodology</a></li>
+            <li><a href="https://github.com/Nikola-dev-finance/ScoreMyAgency" target="_blank" rel="noopener">GitHub</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Company</div>
+          <ul class="footer-links">
+            <li><a href="mailto:hello@scoremyagency.com">Contact</a></li>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Use</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">© 2025 ScoreMyAgency. Built by Nikola.</span>
+        <div class="footer-legal">
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+          <a href="mailto:hello@scoremyagency.com">hello@scoremyagency.com</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
