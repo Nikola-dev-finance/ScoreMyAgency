@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Revenue Concentration Risk: Is Your Agency Too Dependent on One Client? — ScoreMyAgency</title>
+  <meta name="description" content="If your biggest client is more than 25% of revenue, your agency is one phone call away from a crisis. Here's how to assess and fix concentration risk." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #f8f7f4;
+      --bg-dark:   #0e1117;
+      --surface:   #ffffff;
+      --surface-2: #f1ede8;
+      --border:    #e4ddd5;
+      --muted:     #9b9488;
+      --body:      #4a4540;
+      --heading:   #12100e;
+      --ink:       #1a1714;
+      --teal:      #0f766e;
+      --teal-l:    #14b8a6;
+      --amber:     #d97706;
+      --red:       #dc2626;
+      --green:     #16a34a;
+      --font-serif: 'Instrument Serif', Georgia, serif;
+      --font-sans:  'DM Sans', system-ui, sans-serif;
+      --r: 10px;
+      --r-lg: 16px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--body); font-family: var(--font-sans); font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+    h1,h2,h3,h4 { color: var(--heading); line-height: 1.2; }
+    a { color: inherit; text-decoration: none; }
+
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 28px; }
+
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 0.78rem 1.9rem; border-radius: var(--r); font-family: var(--font-sans); font-size: 0.92rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.18s ease; white-space: nowrap; }
+    .btn-primary { background: var(--teal); color: #fff; box-shadow: 0 1px 3px rgba(15,118,110,0.3), inset 0 1px 0 rgba(255,255,255,0.1); }
+    .btn-primary:hover { background: #0a5e58; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(15,118,110,0.3); }
+    .btn-ghost { background: transparent; color: var(--body); border: 1px solid var(--border); }
+    .btn-ghost:hover { border-color: #bbb; background: var(--surface); }
+
+    nav { position: sticky; top: 0; z-index: 200; background: rgba(248,247,244,0.88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
+    .nav-inner { max-width: 1120px; margin: 0 auto; padding: 0 28px; height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .nav-logo { font-family: var(--font-serif); font-size: 1.2rem; color: var(--ink); flex-shrink: 0; }
+    .nav-logo em { font-style: italic; color: var(--teal); }
+    .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
+    .nav-links a { font-size: 0.875rem; font-weight: 500; color: var(--body); transition: color 0.15s; }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-links a.active { color: var(--teal); font-weight: 600; }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .nav-cta { padding: 0.5rem 1.3rem; font-size: 0.875rem; }
+    @media (max-width: 768px) { .nav-links { display: none; } }
+
+    .article-wrap { max-width: 720px; margin: 0 auto; padding: 56px 28px 96px; }
+
+    .back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 0.875rem; font-weight: 500; color: var(--muted); margin-bottom: 40px; transition: color 0.15s; }
+    .back-link:hover { color: var(--body); }
+
+    .article-tag { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--teal); margin-bottom: 14px; }
+
+    .article-wrap h1 { font-family: var(--font-serif); font-size: clamp(1.8rem, 3.5vw, 2.5rem); line-height: 1.18; margin-bottom: 20px; }
+    .article-meta { font-size: 0.85rem; color: var(--muted); margin-bottom: 40px; padding-bottom: 40px; border-bottom: 1px solid var(--border); }
+    .article-wrap h2 { font-family: var(--font-serif); font-size: 1.45rem; margin-top: 48px; margin-bottom: 16px; }
+    .article-wrap p { margin-bottom: 20px; font-size: 1.02rem; line-height: 1.75; }
+    .article-wrap ul, .article-wrap ol { padding-left: 24px; margin-bottom: 20px; }
+    .article-wrap li { font-size: 1.02rem; line-height: 1.75; margin-bottom: 8px; }
+
+    .callout { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--teal); border-radius: 0 var(--r) var(--r) 0; padding: 20px 24px; margin: 32px 0; }
+    .callout p { margin-bottom: 0; }
+    .callout-warning { border-left-color: var(--red); }
+    .callout-amber { border-left-color: var(--amber); }
+
+    .scenario-box {
+      background: #fef3c7;
+      border: 1px solid #fde68a;
+      border-radius: var(--r-lg);
+      padding: 24px 28px;
+      margin: 32px 0;
+    }
+    .scenario-box p { margin-bottom: 0; color: #78350f; font-size: 0.97rem; }
+    .scenario-box strong { color: #92400e; }
+
+    .score-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 28px 32px; margin: 36px 0; }
+    .score-box h3 { font-family: var(--font-serif); font-size: 1.15rem; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+    .score-badge { background: rgba(15,118,110,0.09); color: var(--teal); border: 1px solid rgba(15,118,110,0.22); border-radius: 999px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 10px; }
+    .score-box p { margin-bottom: 0; font-size: 0.95rem; color: var(--body); }
+
+    .cta-section { background: var(--teal); border-radius: var(--r-lg); padding: 48px 40px; text-align: center; margin-top: 64px; }
+    .cta-section h2 { font-family: var(--font-serif); font-size: 1.6rem; color: #fff; margin-bottom: 12px; }
+    .cta-section p { color: rgba(255,255,255,0.8); margin-bottom: 28px; font-size: 1rem; }
+    .btn-white { background: #fff; color: var(--teal); font-weight: 700; }
+    .btn-white:hover { background: #f0fdfa; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
+
+    footer { background: var(--bg-dark); border-top: 1px solid #1a2030; padding: 56px 0 36px; }
+    .footer-top { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
+    .footer-brand-logo { font-family: var(--font-serif); font-size: 1.15rem; color: #e8e4df; margin-bottom: 12px; }
+    .footer-brand-logo em { font-style: italic; color: var(--teal-l); }
+    .footer-tagline { font-size: 0.83rem; color: #3e4a5c; line-height: 1.65; font-weight: 300; max-width: 220px; }
+    .footer-col-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #3e4a5c; margin-bottom: 16px; }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { font-size: 0.84rem; color: #3e4a5c; transition: color 0.15s; }
+    .footer-links a:hover { color: #8a9ab0; }
+    .footer-bottom { border-top: 1px solid #1a2030; padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .footer-copy { font-size: 0.78rem; color: #2e3748; }
+    .footer-legal { display: flex; gap: 20px; }
+    .footer-legal a { font-size: 0.78rem; color: #2e3748; transition: color 0.15s; }
+    .footer-legal a:hover { color: #5a6478; }
+
+    @media (max-width: 960px) { .footer-top { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 640px) { .footer-top { grid-template-columns: 1fr; } .footer-bottom { flex-direction: column; text-align: center; } .cta-section { padding: 36px 24px; } }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo">Score<em>My</em>Agency</a>
+      <ul class="nav-links">
+        <li><a href="../index.html#how">How it works</a></li>
+        <li><a href="../index.html#ratios">Features</a></li>
+        <li><a href="../index.html#sample">Sample report</a></li>
+        <li><a href="../index.html#faq">FAQ</a></li>
+        <li><a href="index.html" class="active">Blog</a></li>
+      </ul>
+      <div class="nav-right">
+        <a href="https://scoremyagency.streamlit.app?tool=true" class="btn btn-ghost nav-cta">Log in</a>
+        <a href="https://scoremyagency.streamlit.app?tool=true" class="btn btn-primary nav-cta">Get my score →</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="article-wrap">
+    <a href="index.html" class="back-link">← Back to blog</a>
+
+    <div class="article-tag">Risk</div>
+    <h1>Revenue Concentration Risk: Is Your Agency Too Dependent on One Client?</h1>
+    <p class="article-meta">6 min read &nbsp;·&nbsp; Agency risk management</p>
+
+    <p>There's a conversation that happens at agencies all over the world, usually on a Monday morning, usually out of nowhere. A senior client calls. They've been acquired, or they've decided to bring everything in-house, or budget has been cut, or they've simply found someone cheaper. The call lasts ten minutes. And just like that, the agency loses 40% of its revenue.</p>
+
+    <p>This isn't a story about bad luck. It's a story about revenue concentration risk — and it's one of the most common and preventable causes of agency failure.</p>
+
+    <h2>What revenue concentration means</h2>
+
+    <p>Revenue concentration measures how much of your total income depends on a single client, or a small group of clients. It's calculated simply: take your biggest client's revenue and divide it by your total revenue. If one client accounts for £200k of your £600k annual revenue, your concentration is 33%.</p>
+
+    <p>The metric matters because it quantifies exactly how vulnerable your agency is to a single client decision that you have no control over. Clients leave for reasons that have nothing to do with the quality of your work — internal restructuring, new procurement processes, budget freezes, personnel changes, acquisitions. You can be doing everything right and still lose them.</p>
+
+    <h2>The 25% danger threshold</h2>
+
+    <p>The broadly accepted rule in agency finance is that no single client should account for more than 25% of your revenue. Below that threshold, losing the client is painful but survivable. Above it, you're one phone call away from a cash flow crisis.</p>
+
+    <div class="callout callout-warning">
+      <p><strong>If your largest client represents more than 25% of revenue,</strong> the agency's continued existence is partially outside your control. That's not a comfortable place to run a business from.</p>
+    </div>
+
+    <p>The 25% figure isn't arbitrary. At that level, losing the client reduces revenue by a quarter — serious, but something a well-run agency can absorb through cost adjustments, pipeline acceleration, and existing reserves. At 40% concentration or above, you'd need to either cut headcount significantly or run down cash reserves very quickly, and you'd need to replace that revenue fast enough to avoid either outcome. In practice, most agencies can't do both.</p>
+
+    <h2>A real-world scenario</h2>
+
+    <div class="scenario-box">
+      <p><strong>Imagine an agency billing £900k per year.</strong> Their biggest client — a retail brand they've worked with for three years — accounts for £360k, or 40% of revenue. The relationship feels solid. The client is happy. Then the brand is acquired. The acquiring company has an in-house team and a preferred agency. The contract ends in 90 days. The agency now needs to replace £360k in revenue in three months while simultaneously maintaining its existing cost base — payroll, software, office space. They can't. They lay off three people, lose a second client who notices the chaos, and spend 18 months recovering. They survive, but only barely.</p>
+    </div>
+
+    <p>This isn't a hypothetical. It's a compressed version of what happens to agencies every year. The tragic part is that it was entirely predictable — and largely preventable.</p>
+
+    <h2>Why concentration happens</h2>
+
+    <p>Revenue concentration doesn't usually happen because an agency made a bad decision. It happens because they made a series of comfortable ones.</p>
+
+    <p>Big clients are easy. They provide predictable revenue, they often don't require heavy new-business effort to maintain, and they grow naturally if the relationship is good. It's rational to keep them happy and to say yes when they want to expand the scope. The problem is that this comfort becomes a trap. Every additional £10k from the big client is £10k you didn't have to work for — and it quietly increases your concentration without anyone noticing.</p>
+
+    <p>Meanwhile, new business development is hard and slow. Prospecting takes time, proposals take time, and clients take time to ramp up. It's always easier to deliver for the client in front of you than to go looking for the next one. So agencies drift. A client that was 18% of revenue two years ago is now 35%, and nobody made a conscious decision to let that happen.</p>
+
+    <h2>The emotional trap: "they'll never leave"</h2>
+
+    <p>Every agency with a dangerously concentrated client has a version of the same internal story: this client is different. The relationships are too deep. The switching costs are too high. They've been with us for five years. They told us we're their most important agency partner.</p>
+
+    <p>This is what every agency says before the client leaves. The strength of a client relationship is not a substitute for diversified revenue. Relationships change when the people change. Budgets change when the business changes. The agency has no control over either of these things.</p>
+
+    <p>The emotionally uncomfortable truth is that the better a client relationship feels, the easier it is to let concentration grow — because it never seems like an urgent problem until it suddenly is.</p>
+
+    <h2>How to fix concentration risk</h2>
+
+    <p><strong>Prospect while things are good.</strong> This is the most important and most ignored piece of advice in agency management. New business development is hardest when you're desperate and easiest when you're busy. The agency with 35% concentration has every incentive to ignore new business because the big client keeps them comfortable. That's exactly when they should be building pipeline.</p>
+
+    <p><strong>Set an internal concentration cap.</strong> Decide that no single client will exceed 20–25% of revenue, and treat it as a genuine constraint. When a client approaches the threshold, new work from them should trigger intensified new business activity elsewhere — not just a note to watch out. Some agencies even decline additional work from over-concentrated clients, which feels counterintuitive but protects the business.</p>
+
+    <p><strong>Diversify service offerings.</strong> Agencies that serve clients in narrow, concentrated ways are harder to replace — but they're also more vulnerable to category-level shifts. If you do SEO for one big client, and they decide SEO isn't a priority, you lose everything. Broadening your capability set increases the number of problems you can solve for new clients, which makes diversification faster.</p>
+
+    <p><strong>Make concentration visible.</strong> Review client concentration at every monthly leadership meeting. Put the number on the dashboard. Most agencies only think about it when someone raises a concern, which is usually too late. Visibility creates accountability.</p>
+
+    <div class="score-box">
+      <h3>How ScoreMyAgency calculates this <span class="score-badge">28% weight</span></h3>
+      <p>Revenue concentration carries the highest weight of all six ratios in the ScoreMyAgency score — 28%. This reflects the research: concentration is the single strongest predictor of agency financial distress. An agency with great margins and poor cash flow can survive. An agency with great margins and 50% concentration in one client is one conversation away from a crisis. We score it on a 0–10 scale, with 10 awarded at under 15% concentration. Any agency above 40% concentration receives a score of 0 and a critical warning flag, regardless of other metrics.</p>
+    </div>
+
+    <div class="cta-section">
+      <h2>Check your agency's concentration score — free, no signup, 2 minutes</h2>
+      <p>Enter your client revenue split and see exactly where you stand across all six financial health ratios.</p>
+      <a href="https://scoremyagency.com" class="btn btn-white">Score my agency →</a>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-top">
+        <div>
+          <div class="footer-brand-logo">Score<em>My</em>Agency</div>
+          <p class="footer-tagline">Free financial health scoring for digital agencies. Know your number in 2 minutes.</p>
+        </div>
+        <div>
+          <div class="footer-col-title">Product</div>
+          <ul class="footer-links">
+            <li><a href="../index.html#how">How it works</a></li>
+            <li><a href="../index.html#ratios">Features</a></li>
+            <li><a href="../index.html#sample">Sample report</a></li>
+            <li><a href="https://scoremyagency.streamlit.app?tool=true">Launch app</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Resources</div>
+          <ul class="footer-links">
+            <li><a href="../index.html#faq">FAQ</a></li>
+            <li><a href="../methodology.html">Methodology</a></li>
+            <li><a href="index.html">Blog</a></li>
+            <li><a href="https://github.com/Nikola-dev-finance/ScoreMyAgency" target="_blank" rel="noopener">GitHub</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Company</div>
+          <ul class="footer-links">
+            <li><a href="mailto:hello@scoremyagency.com">Contact</a></li>
+            <li><a href="../privacy.html">Privacy Policy</a></li>
+            <li><a href="../terms.html">Terms of Use</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">© 2025 ScoreMyAgency. Built by Nikola.</span>
+        <div class="footer-legal">
+          <a href="../privacy.html">Privacy</a>
+          <a href="../terms.html">Terms</a>
+          <a href="mailto:hello@scoremyagency.com">hello@scoremyagency.com</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

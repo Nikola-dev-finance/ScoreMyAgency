@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog — ScoreMyAgency</title>
+  <meta name="description" content="Practical financial guides for digital agency owners. Gross margin, cash flow, revenue concentration, and more." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #f8f7f4;
+      --bg-dark:   #0e1117;
+      --surface:   #ffffff;
+      --surface-2: #f1ede8;
+      --border:    #e4ddd5;
+      --muted:     #9b9488;
+      --body:      #4a4540;
+      --heading:   #12100e;
+      --ink:       #1a1714;
+      --teal:      #0f766e;
+      --teal-l:    #14b8a6;
+      --font-serif: 'Instrument Serif', Georgia, serif;
+      --font-sans:  'DM Sans', system-ui, sans-serif;
+      --r: 10px;
+      --r-lg: 16px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--body);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1,h2,h3,h4 { color: var(--heading); line-height: 1.2; }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 28px; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0.78rem 1.9rem;
+      border-radius: var(--r);
+      font-family: var(--font-sans);
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.18s ease;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--teal);
+      color: #fff;
+      box-shadow: 0 1px 3px rgba(15,118,110,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    .btn-primary:hover { background: #0a5e58; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(15,118,110,0.3); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--body);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { border-color: #bbb; background: var(--surface); }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(248,247,244,0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 28px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .nav-logo { font-family: var(--font-serif); font-size: 1.2rem; color: var(--ink); flex-shrink: 0; }
+    .nav-logo em { font-style: italic; color: var(--teal); }
+    .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
+    .nav-links a { font-size: 0.875rem; font-weight: 500; color: var(--body); transition: color 0.15s; }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-links a.active { color: var(--teal); font-weight: 600; }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .nav-cta { padding: 0.5rem 1.3rem; font-size: 0.875rem; }
+    @media (max-width: 768px) { .nav-links { display: none; } }
+
+    /* ── Page header ── */
+    .page-header {
+      padding: 72px 0 56px;
+      border-bottom: 1px solid var(--border);
+    }
+    .page-header .pill-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(15,118,110,0.09);
+      border: 1px solid rgba(15,118,110,0.22);
+      border-radius: 999px;
+      padding: 4px 14px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 20px;
+    }
+    .page-header .dot { width: 5px; height: 5px; background: var(--teal-l); border-radius: 50%; }
+    .page-header h1 { font-family: var(--font-serif); font-size: clamp(2rem, 4vw, 2.8rem); margin-bottom: 16px; }
+    .page-header h1 em { font-style: italic; color: var(--teal); }
+    .page-header p { font-size: 1.05rem; color: var(--muted); max-width: 540px; }
+
+    /* ── Blog grid ── */
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      padding: 64px 0 96px;
+    }
+    @media (max-width: 900px) { .blog-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 560px) { .blog-grid { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 32px 28px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: box-shadow 0.18s ease, transform 0.18s ease;
+    }
+    .card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.07); transform: translateY(-2px); }
+
+    .card-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--teal);
+    }
+    .card h2 {
+      font-family: var(--font-serif);
+      font-size: 1.22rem;
+      line-height: 1.28;
+      color: var(--heading);
+    }
+    .card p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.6;
+      flex: 1;
+    }
+    .card-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--teal);
+      margin-top: 4px;
+      transition: gap 0.15s;
+    }
+    .card-link:hover { gap: 10px; }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--bg-dark);
+      border-top: 1px solid #1a2030;
+      padding: 56px 0 36px;
+    }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 48px;
+    }
+    .footer-brand-logo { font-family: var(--font-serif); font-size: 1.15rem; color: #e8e4df; margin-bottom: 12px; }
+    .footer-brand-logo em { font-style: italic; color: var(--teal-l); }
+    .footer-tagline { font-size: 0.83rem; color: #3e4a5c; line-height: 1.65; font-weight: 300; max-width: 220px; }
+    .footer-col-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #3e4a5c; margin-bottom: 16px; }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { font-size: 0.84rem; color: #3e4a5c; transition: color 0.15s; }
+    .footer-links a:hover { color: #8a9ab0; }
+    .footer-bottom { border-top: 1px solid #1a2030; padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .footer-copy { font-size: 0.78rem; color: #2e3748; }
+    .footer-legal { display: flex; gap: 20px; }
+    .footer-legal a { font-size: 0.78rem; color: #2e3748; transition: color 0.15s; }
+    .footer-legal a:hover { color: #5a6478; }
+
+    @media (max-width: 960px) { .footer-top { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 640px) { .footer-top { grid-template-columns: 1fr; } .footer-bottom { flex-direction: column; text-align: center; } }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo">Score<em>My</em>Agency</a>
+      <ul class="nav-links">
+        <li><a href="../index.html#how">How it works</a></li>
+        <li><a href="../index.html#ratios">Features</a></li>
+        <li><a href="../index.html#sample">Sample report</a></li>
+        <li><a href="../index.html#faq">FAQ</a></li>
+        <li><a href="index.html" class="active">Blog</a></li>
+      </ul>
+      <div class="nav-right">
+        <a href="https://scoremyagency.streamlit.app?tool=true" class="btn btn-ghost nav-cta">Log in</a>
+        <a href="https://scoremyagency.streamlit.app?tool=true" class="btn btn-primary nav-cta">Get my score →</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <div class="container">
+      <div class="pill-label"><span class="dot"></span> Agency Finance</div>
+      <h1>The <em>ScoreMyAgency</em> blog</h1>
+      <p>Practical guides on agency financial health — margins, cash flow, client concentration, and what the numbers really mean.</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="blog-grid">
+
+      <a class="card" href="what-is-a-good-gross-margin-for-a-digital-agency.html">
+        <div class="card-tag">Profitability</div>
+        <h2>What Is a Good Gross Margin for a Digital Agency?</h2>
+        <p>Typical ranges, what affects your margin, and how to tell if you're running a real agency or an expensive staffing operation.</p>
+        <span class="card-link">Read more →</span>
+      </a>
+
+      <a class="card" href="revenue-concentration-risk-is-your-agency-too-dependent-on-one-client.html">
+        <div class="card-tag">Risk</div>
+        <h2>Revenue Concentration Risk: Is Your Agency Too Dependent on One Client?</h2>
+        <p>If your biggest client is more than 25% of revenue, you're one phone call away from a crisis. Here's how to assess and fix it.</p>
+        <span class="card-link">Read more →</span>
+      </a>
+
+      <a class="card" href="how-to-calculate-days-sales-outstanding-for-your-agency.html">
+        <div class="card-tag">Cash Flow</div>
+        <h2>How to Calculate Days Sales Outstanding for Your Agency</h2>
+        <p>DSO measures how fast your agency gets paid. Learn the formula, what good looks like, and how to reduce the gap between invoice and cash.</p>
+        <span class="card-link">Read more →</span>
+      </a>
+
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-top">
+        <div>
+          <div class="footer-brand-logo">Score<em>My</em>Agency</div>
+          <p class="footer-tagline">Free financial health scoring for digital agencies. Know your number in 2 minutes.</p>
+        </div>
+        <div>
+          <div class="footer-col-title">Product</div>
+          <ul class="footer-links">
+            <li><a href="../index.html#how">How it works</a></li>
+            <li><a href="../index.html#ratios">Features</a></li>
+            <li><a href="../index.html#sample">Sample report</a></li>
+            <li><a href="https://scoremyagency.streamlit.app?tool=true">Launch app</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Resources</div>
+          <ul class="footer-links">
+            <li><a href="../index.html#faq">FAQ</a></li>
+            <li><a href="../methodology.html">Methodology</a></li>
+            <li><a href="index.html">Blog</a></li>
+            <li><a href="https://github.com/Nikola-dev-finance/ScoreMyAgency" target="_blank" rel="noopener">GitHub</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Company</div>
+          <ul class="footer-links">
+            <li><a href="mailto:hello@scoremyagency.com">Contact</a></li>
+            <li><a href="../privacy.html">Privacy Policy</a></li>
+            <li><a href="../terms.html">Terms of Use</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">© 2025 ScoreMyAgency. Built by Nikola.</span>
+        <div class="footer-legal">
+          <a href="../privacy.html">Privacy</a>
+          <a href="../terms.html">Terms</a>
+          <a href="mailto:hello@scoremyagency.com">hello@scoremyagency.com</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to Calculate Days Sales Outstanding for Your Agency — ScoreMyAgency</title>
+  <meta name="description" content="DSO measures how fast your agency gets paid. Learn the formula, what good looks like, and how to reduce your DSO." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #f8f7f4;
+      --bg-dark:   #0e1117;
+      --surface:   #ffffff;
+      --surface-2: #f1ede8;
+      --border:    #e4ddd5;
+      --muted:     #9b9488;
+      --body:      #4a4540;
+      --heading:   #12100e;
+      --ink:       #1a1714;
+      --teal:      #0f766e;
+      --teal-l:    #14b8a6;
+      --amber:     #d97706;
+      --red:       #dc2626;
+      --green:     #16a34a;
+      --font-serif: 'Instrument Serif', Georgia, serif;
+      --font-sans:  'DM Sans', system-ui, sans-serif;
+      --r: 10px;
+      --r-lg: 16px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--body); font-family: var(--font-sans); font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+    h1,h2,h3,h4 { color: var(--heading); line-height: 1.2; }
+    a { color: inherit; text-decoration: none; }
+
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 28px; }
+
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 0.78rem 1.9rem; border-radius: var(--r); font-family: var(--font-sans); font-size: 0.92rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.18s ease; white-space: nowrap; }
+    .btn-primary { background: var(--teal); color: #fff; box-shadow: 0 1px 3px rgba(15,118,110,0.3), inset 0 1px 0 rgba(255,255,255,0.1); }
+    .btn-primary:hover { background: #0a5e58; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(15,118,110,0.3); }
+    .btn-ghost { background: transparent; color: var(--body); border: 1px solid var(--border); }
+    .btn-ghost:hover { border-color: #bbb; background: var(--surface); }
+
+    nav { position: sticky; top: 0; z-index: 200; background: rgba(248,247,244,0.88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
+    .nav-inner { max-width: 1120px; margin: 0 auto; padding: 0 28px; height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .nav-logo { font-family: var(--font-serif); font-size: 1.2rem; color: var(--ink); flex-shrink: 0; }
+    .nav-logo em { font-style: italic; color: var(--teal); }
+    .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
+    .nav-links a { font-size: 0.875rem; font-weight: 500; color: var(--body); transition: color 0.15s; }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-links a.active { color: var(--teal); font-weight: 600; }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .nav-cta { padding: 0.5rem 1.3rem; font-size: 0.875rem; }
+    @media (max-width: 768px) { .nav-links { display: none; } }
+
+    .article-wrap { max-width: 720px; margin: 0 auto; padding: 56px 28px 96px; }
+
+    .back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 0.875rem; font-weight: 500; color: var(--muted); margin-bottom: 40px; transition: color 0.15s; }
+    .back-link:hover { color: var(--body); }
+
+    .article-tag { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--teal); margin-bottom: 14px; }
+
+    .article-wrap h1 { font-family: var(--font-serif); font-size: clamp(1.8rem, 3.5vw, 2.5rem); line-height: 1.18; margin-bottom: 20px; }
+    .article-meta { font-size: 0.85rem; color: var(--muted); margin-bottom: 40px; padding-bottom: 40px; border-bottom: 1px solid var(--border); }
+    .article-wrap h2 { font-family: var(--font-serif); font-size: 1.45rem; margin-top: 48px; margin-bottom: 16px; }
+    .article-wrap p { margin-bottom: 20px; font-size: 1.02rem; line-height: 1.75; }
+    .article-wrap ul, .article-wrap ol { padding-left: 24px; margin-bottom: 20px; }
+    .article-wrap li { font-size: 1.02rem; line-height: 1.75; margin-bottom: 8px; }
+
+    .callout { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--teal); border-radius: 0 var(--r) var(--r) 0; padding: 20px 24px; margin: 32px 0; }
+    .callout p { margin-bottom: 0; }
+    .callout-warning { border-left-color: var(--red); }
+
+    .dso-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 32px 0;
+      font-size: 0.95rem;
+    }
+    .dso-table th {
+      background: var(--surface-2);
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 2px solid var(--border);
+      color: var(--heading);
+    }
+    .dso-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .dso-table tr:last-child td { border-bottom: none; }
+    .tag-good { color: var(--green); font-weight: 600; }
+    .tag-warn { color: var(--amber); font-weight: 600; }
+    .tag-bad { color: var(--red); font-weight: 600; }
+
+    .score-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 28px 32px; margin: 36px 0; }
+    .score-box h3 { font-family: var(--font-serif); font-size: 1.15rem; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+    .score-badge { background: rgba(15,118,110,0.09); color: var(--teal); border: 1px solid rgba(15,118,110,0.22); border-radius: 999px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 10px; }
+    .score-box p { margin-bottom: 0; font-size: 0.95rem; color: var(--body); }
+
+    .cta-section { background: var(--teal); border-radius: var(--r-lg); padding: 48px 40px; text-align: center; margin-top: 64px; }
+    .cta-section h2 { font-family: var(--font-serif); font-size: 1.6rem; color: #fff; margin-bottom: 12px; }
+    .cta-section p { color: rgba(255,255,255,0.8); margin-bottom: 28px; font-size: 1rem; }
+    .btn-white { background: #fff; color: var(--teal); font-weight: 700; }
+    .btn-white:hover { background: #f0fdfa; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
+
+    footer { background: var(--bg-dark); border-top: 1px solid #1a2030; padding: 56px 0 36px; }
+    .footer-top { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
+    .footer-brand-logo { font-family: var(--font-serif); font-size: 1.15rem; color: #e8e4df; margin-bottom: 12px; }
+    .footer-brand-logo em { font-style: italic; color: var(--teal-l); }
+    .footer-tagline { font-size: 0.83rem; color: #3e4a5c; line-height: 1.65; font-weight: 300; max-width: 220px; }
+    .footer-col-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #3e4a5c; margin-bottom: 16px; }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { font-size: 0.84rem; color: #3e4a5c; transition: color 0.15s; }
+    .footer-links a:hover { color: #8a9ab0; }
+    .footer-bottom { border-top: 1px solid #1a2030; padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .footer-copy { font-size: 0.78rem; color: #2e3748; }
+    .footer-legal { display: flex; gap: 20px; }
+    .footer-legal a { font-size: 0.78rem; color: #2e3748; transition: color 0.15s; }
+    .footer-legal a:hover { color: #5a6478; }
+
+    @media (max-width: 960px) { .footer-top { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 640px) { .footer-top { grid-template-columns: 1fr; } .footer-bottom { flex-direction: column; text-align: center; } .cta-section { padding: 36px 24px; } .dso-table { font-size: 0.875rem; } }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo">Score<em>My</em>Agency</a>
+      <ul class="nav-links">
+        <li><a href="../index.html#how">How it works</a></li>
+        <li><a href="../index.html#ratios">Features</a></li>
+        <li><a href="../index.html#sample">Sample report</a></li>
+        <li><a href="../index.html#faq">FAQ</a></li>
+        <li><a href="index.html" class="active">Blog</a></li>
+      </ul>
+      <div class="nav-right">
+        <a href="https://scoremyagency.streamlit.app?tool=true" class="btn btn-ghost nav-cta">Log in</a>
+        <a href="https://scoremyagency.streamlit.app?tool=true" class="btn btn-primary nav-cta">Get my score →</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="article-wrap">
+    <a href="index.html" class="back-link">← Back to blog</a>
+
+    <div class="article-tag">Cash Flow</div>
+    <h1>How to Calculate Days Sales Outstanding for Your Agency</h1>
+    <p class="article-meta">6 min read &nbsp;·&nbsp; Agency cash flow</p>
+
+    <p>Your agency could be profitable on paper and still run out of cash. This happens more often than most agency owners expect, and one of the main culprits is a metric called Days Sales Outstanding — or DSO. It measures the gap between when you invoice a client and when you actually receive the money. That gap, multiplied across every client, is the silent drain on your cash flow.</p>
+
+    <p>Understanding DSO doesn't require an accounting background. It requires about five minutes and a copy of your accounts receivable balance.</p>
+
+    <h2>The DSO formula</h2>
+
+    <p>DSO tells you the average number of days it takes your agency to collect payment after invoicing. The calculation is:</p>
+
+    <div class="callout">
+      <p><strong>DSO = (Accounts Receivable ÷ Revenue) × Number of Days</strong></p>
+    </div>
+
+    <p>Where "accounts receivable" is the total outstanding invoices at a given point in time, "revenue" is the revenue earned over a specific period, and "number of days" is the length of that period (typically 30 for monthly or 90 for quarterly).</p>
+
+    <p>For example: if your agency has £80,000 in outstanding invoices and earned £300,000 in revenue over the last 90 days, your DSO is (80,000 ÷ 300,000) × 90 = 24 days. That means on average, you're being paid 24 days after invoicing.</p>
+
+    <h2>What good DSO looks like for agencies</h2>
+
+    <table class="dso-table">
+      <thead>
+        <tr>
+          <th>DSO range</th>
+          <th>Assessment</th>
+          <th>What it usually means</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Under 30 days</td>
+          <td><span class="tag-good">Healthy</span></td>
+          <td>Tight terms, good follow-through on invoices</td>
+        </tr>
+        <tr>
+          <td>30–45 days</td>
+          <td><span class="tag-warn">Concerning</span></td>
+          <td>Slippage on terms, slow-paying clients building up</td>
+        </tr>
+        <tr>
+          <td>45–60 days</td>
+          <td><span class="tag-bad">Dangerous</span></td>
+          <td>Cash gap emerging; growth will make this worse</td>
+        </tr>
+        <tr>
+          <td>60+ days</td>
+          <td><span class="tag-bad">Critical</span></td>
+          <td>You are effectively financing your clients' operations</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>Most healthy digital agencies operate with a DSO between 20 and 35 days. Anything beyond 45 days deserves serious attention, not just because of the cash impact today, but because of what happens when the agency grows.</p>
+
+    <h2>Why high DSO kills agencies — especially growing ones</h2>
+
+    <p>The maths here is simple but brutal. Your agency pays salaries, software subscriptions, and overhead on a monthly cycle. Most of those costs land at the start of the month. But if your clients are paying 60 days after invoicing, you're covering 60 days of costs before the corresponding revenue arrives in your account.</p>
+
+    <p>At a small scale, this is manageable — uncomfortable, but manageable. As revenue grows, the problem scales with it. An agency billing £50k per month with 60-day DSO needs to float roughly £100k in receivables at any given time. If that agency doubles to £100k per month, the float becomes £200k. The agency needs more cash in the business just to sustain its growth, regardless of how profitable it is.</p>
+
+    <div class="callout callout-warning">
+      <p><strong>The paradox of fast growth:</strong> Agencies that are winning new business and growing quickly often have the worst DSO — because they're so focused on delivery that chasing invoices feels like a distraction. Growth accelerates the cash gap until it becomes a genuine crisis.</p>
+    </div>
+
+    <p>This is why agencies that appear to be thriving can suddenly find themselves unable to make payroll. Revenue is there. Profit is there. Cash is not — because it's sitting in unpaid invoices scattered across a dozen clients.</p>
+
+    <h2>Common causes of high DSO at agencies</h2>
+
+    <p><strong>Vague or long payment terms.</strong> The most common cause. An invoice with 30-day payment terms sent at the end of the month won't be paid until the end of the following month. Add processing time at the client's accounts payable department, and you're looking at 45–60 days in practice. The fix starts with shorter terms — 14 days is entirely reasonable for agency work.</p>
+
+    <p><strong>Not chasing overdue invoices.</strong> Many agency owners find invoice chasing uncomfortable, particularly when the client is a valued relationship. The result is that invoices sit unpaid for weeks or months past due, not because the client is unwilling to pay but because no one has asked them to. Automated payment reminders remove the awkwardness entirely.</p>
+
+    <p><strong>Big clients using you as a bank.</strong> Enterprise clients often have procurement processes that mandate 60 or 90 day payment terms. They're not being difficult — it's just how their accounts payable works. The problem is that small agencies don't have the balance sheet to absorb those terms across multiple large clients. If you work with enterprise clients, factor DSO into your pricing — if they pay in 90 days, your effective rate needs to account for the cost of carrying that receivable.</p>
+
+    <p><strong>No upfront payment structure.</strong> Sending a single invoice at the end of a project means you've done all the work before receiving any money. A 50% deposit upfront and 50% on completion not only improves DSO — it also reduces the risk of non-payment entirely, because a client who has already paid half is more invested in completing the project.</p>
+
+    <h2>How to reduce your DSO</h2>
+
+    <ul>
+      <li><strong>Shorten payment terms to 14 days</strong> for all new contracts. For existing clients, renegotiate at contract renewal. Most won't push back.</li>
+      <li><strong>Require a 50% deposit on project work</strong> before starting. Frame it as standard practice — it is, for well-run agencies.</li>
+      <li><strong>Automate invoice reminders</strong> at 7 days before due, on the due date, and 3 days after. Most accounting software handles this. It removes the personal awkwardness and dramatically reduces late payment.</li>
+      <li><strong>Add late payment terms to your contracts.</strong> A 1.5% monthly interest charge on overdue invoices isn't just about the money — it signals that you take your terms seriously, which affects how quickly clients prioritise your invoices.</li>
+      <li><strong>Invoice immediately.</strong> Many agencies invoice at month end as a batch process. But a project completed on the 5th doesn't need to wait until the 31st to be invoiced. Send invoices within 24 hours of milestone completion.</li>
+    </ul>
+
+    <div class="score-box">
+      <h3>How ScoreMyAgency calculates this <span class="score-badge">22% weight</span></h3>
+      <p>DSO carries a 22% weight in the ScoreMyAgency score — the second highest of the six ratios, reflecting how directly it affects the ability to operate and grow. We score it on a 0–10 scale, with 10 awarded at under 20 days. Above 60 days receives a score of 0 and a cash flow warning flag. Unlike some metrics, DSO can deteriorate rapidly — a score that was healthy six months ago may look very different today if you've won a few slow-paying enterprise clients.</p>
+    </div>
+
+    <div class="cta-section">
+      <h2>Check your agency's DSO score — free, no signup, 2 minutes</h2>
+      <p>Enter your accounts receivable balance and revenue, and get a full six-ratio financial health breakdown.</p>
+      <a href="https://scoremyagency.com" class="btn btn-white">Score my agency →</a>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-top">
+        <div>
+          <div class="footer-brand-logo">Score<em>My</em>Agency</div>
+          <p class="footer-tagline">Free financial health scoring for digital agencies. Know your number in 2 minutes.</p>
+        </div>
+        <div>
+          <div class="footer-col-title">Product</div>
+          <ul class="footer-links">
+            <li><a href="../index.html#how">How it works</a></li>
+            <li><a href="../index.html#ratios">Features</a></li>
+            <li><a href="../index.html#sample">Sample report</a></li>
+            <li><a href="https://scoremyagency.streamlit.app?tool=true">Launch app</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Resources</div>
+          <ul class="footer-links">
+            <li><a href="../index.html#faq">FAQ</a></li>
+            <li><a href="../methodology.html">Methodology</a></li>
+            <li><a href="index.html">Blog</a></li>
+            <li><a href="https://github.com/Nikola-dev-finance/ScoreMyAgency" target="_blank" rel="noopener">GitHub</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Company</div>
+          <ul class="footer-links">
+            <li><a href="mailto:hello@scoremyagency.com">Contact</a></li>
+            <li><a href="../privacy.html">Privacy Policy</a></li>
+            <li><a href="../terms.html">Terms of Use</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">© 2025 ScoreMyAgency. Built by Nikola.</span>
+        <div class="footer-legal">
+          <a href="../privacy.html">Privacy</a>
+          <a href="../terms.html">Terms</a>
+          <a href="mailto:hello@scoremyagency.com">hello@scoremyagency.com</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

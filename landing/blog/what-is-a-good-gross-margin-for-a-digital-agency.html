@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>What Is a Good Gross Margin for a Digital Agency? — ScoreMyAgency</title>
+  <meta name="description" content="Learn what a healthy gross margin looks like for digital agencies, typical ranges, what affects it, and how to improve yours." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #f8f7f4;
+      --bg-dark:   #0e1117;
+      --surface:   #ffffff;
+      --surface-2: #f1ede8;
+      --border:    #e4ddd5;
+      --muted:     #9b9488;
+      --body:      #4a4540;
+      --heading:   #12100e;
+      --ink:       #1a1714;
+      --teal:      #0f766e;
+      --teal-l:    #14b8a6;
+      --amber:     #d97706;
+      --red:       #dc2626;
+      --green:     #16a34a;
+      --font-serif: 'Instrument Serif', Georgia, serif;
+      --font-sans:  'DM Sans', system-ui, sans-serif;
+      --r: 10px;
+      --r-lg: 16px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--body); font-family: var(--font-sans); font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+    h1,h2,h3,h4 { color: var(--heading); line-height: 1.2; }
+    a { color: inherit; text-decoration: none; }
+
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 28px; }
+
+    /* ── Buttons ── */
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 0.78rem 1.9rem; border-radius: var(--r); font-family: var(--font-sans); font-size: 0.92rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.18s ease; white-space: nowrap; }
+    .btn-primary { background: var(--teal); color: #fff; box-shadow: 0 1px 3px rgba(15,118,110,0.3), inset 0 1px 0 rgba(255,255,255,0.1); }
+    .btn-primary:hover { background: #0a5e58; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(15,118,110,0.3); }
+    .btn-ghost { background: transparent; color: var(--body); border: 1px solid var(--border); }
+    .btn-ghost:hover { border-color: #bbb; background: var(--surface); }
+
+    /* ── Nav ── */
+    nav { position: sticky; top: 0; z-index: 200; background: rgba(248,247,244,0.88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
+    .nav-inner { max-width: 1120px; margin: 0 auto; padding: 0 28px; height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .nav-logo { font-family: var(--font-serif); font-size: 1.2rem; color: var(--ink); flex-shrink: 0; }
+    .nav-logo em { font-style: italic; color: var(--teal); }
+    .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
+    .nav-links a { font-size: 0.875rem; font-weight: 500; color: var(--body); transition: color 0.15s; }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-links a.active { color: var(--teal); font-weight: 600; }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .nav-cta { padding: 0.5rem 1.3rem; font-size: 0.875rem; }
+    @media (max-width: 768px) { .nav-links { display: none; } }
+
+    /* ── Article layout ── */
+    .article-wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 56px 28px 96px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--muted);
+      margin-bottom: 40px;
+      transition: color 0.15s;
+    }
+    .back-link:hover { color: var(--body); }
+
+    .article-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--teal);
+      margin-bottom: 14px;
+    }
+
+    .article-wrap h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+      line-height: 1.18;
+      margin-bottom: 20px;
+    }
+
+    .article-meta {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 40px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .article-wrap h2 {
+      font-family: var(--font-serif);
+      font-size: 1.45rem;
+      margin-top: 48px;
+      margin-bottom: 16px;
+    }
+
+    .article-wrap p {
+      margin-bottom: 20px;
+      font-size: 1.02rem;
+      line-height: 1.75;
+    }
+
+    .article-wrap ul, .article-wrap ol {
+      padding-left: 24px;
+      margin-bottom: 20px;
+    }
+    .article-wrap li {
+      font-size: 1.02rem;
+      line-height: 1.75;
+      margin-bottom: 8px;
+    }
+
+    .callout {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--teal);
+      border-radius: 0 var(--r) var(--r) 0;
+      padding: 20px 24px;
+      margin: 32px 0;
+    }
+    .callout p { margin-bottom: 0; }
+
+    .callout-warning {
+      border-left-color: var(--red);
+    }
+
+    .score-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 28px 32px;
+      margin: 36px 0;
+    }
+    .score-box h3 {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .score-badge {
+      background: rgba(15,118,110,0.09);
+      color: var(--teal);
+      border: 1px solid rgba(15,118,110,0.22);
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+    }
+    .score-box p { margin-bottom: 0; font-size: 0.95rem; color: var(--body); }
+
+    /* ── CTA section ── */
+    .cta-section {
+      background: var(--teal);
+      border-radius: var(--r-lg);
+      padding: 48px 40px;
+      text-align: center;
+      margin-top: 64px;
+    }
+    .cta-section h2 {
+      font-family: var(--font-serif);
+      font-size: 1.6rem;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+    .cta-section p { color: rgba(255,255,255,0.8); margin-bottom: 28px; font-size: 1rem; }
+    .btn-white { background: #fff; color: var(--teal); font-weight: 700; }
+    .btn-white:hover { background: #f0fdfa; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
+
+    /* ── Footer ── */
+    footer { background: var(--bg-dark); border-top: 1px solid #1a2030; padding: 56px 0 36px; }
+    .footer-top { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
+    .footer-brand-logo { font-family: var(--font-serif); font-size: 1.15rem; color: #e8e4df; margin-bottom: 12px; }
+    .footer-brand-logo em { font-style: italic; color: var(--teal-l); }
+    .footer-tagline { font-size: 0.83rem; color: #3e4a5c; line-height: 1.65; font-weight: 300; max-width: 220px; }
+    .footer-col-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #3e4a5c; margin-bottom: 16px; }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { font-size: 0.84rem; color: #3e4a5c; transition: color 0.15s; }
+    .footer-links a:hover { color: #8a9ab0; }
+    .footer-bottom { border-top: 1px solid #1a2030; padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .footer-copy { font-size: 0.78rem; color: #2e3748; }
+    .footer-legal { display: flex; gap: 20px; }
+    .footer-legal a { font-size: 0.78rem; color: #2e3748; transition: color 0.15s; }
+    .footer-legal a:hover { color: #5a6478; }
+
+    @media (max-width: 960px) { .footer-top { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 640px) { .footer-top { grid-template-columns: 1fr; } .footer-bottom { flex-direction: column; text-align: center; } .cta-section { padding: 36px 24px; } }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo">Score<em>My</em>Agency</a>
+      <ul class="nav-links">
+        <li><a href="../index.html#how">How it works</a></li>
+        <li><a href="../index.html#ratios">Features</a></li>
+        <li><a href="../index.html#sample">Sample report</a></li>
+        <li><a href="../index.html#faq">FAQ</a></li>
+        <li><a href="index.html" class="active">Blog</a></li>
+      </ul>
+      <div class="nav-right">
+        <a href="https://scoremyagency.streamlit.app?tool=true" class="btn btn-ghost nav-cta">Log in</a>
+        <a href="https://scoremyagency.streamlit.app?tool=true" class="btn btn-primary nav-cta">Get my score →</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="article-wrap">
+    <a href="index.html" class="back-link">← Back to blog</a>
+
+    <div class="article-tag">Profitability</div>
+    <h1>What Is a Good Gross Margin for a Digital Agency?</h1>
+    <p class="article-meta">5 min read &nbsp;·&nbsp; Agency finance fundamentals</p>
+
+    <p>Revenue is vanity, profit is sanity — and gross margin is the number that tells you which one you're actually running. Most agency owners can quote their revenue to the dollar. Far fewer can tell you their gross margin without opening a spreadsheet. That's a problem, because gross margin is the single most important indicator of whether your agency is a real business or an expensive talent-management operation.</p>
+
+    <h2>What gross margin actually means</h2>
+
+    <p>Gross margin is the percentage of revenue left after you subtract the direct costs of delivering your work. The formula is straightforward:</p>
+
+    <div class="callout">
+      <p><strong>Gross Margin = (Revenue − Direct Delivery Costs) ÷ Revenue × 100</strong></p>
+    </div>
+
+    <p>Direct delivery costs — sometimes called cost of goods sold or COGS — include anything you spend specifically to produce client work: freelancer and contractor fees, software licences billed per project, third-party production costs, and the payroll of anyone whose time is entirely billable to clients.</p>
+
+    <p>What it does <em>not</em> include: rent, your own salary as an owner, sales and marketing, or general overhead. Those come out further down the P&amp;L when you're calculating operating profit. Gross margin is purely about how efficiently you convert revenue into the raw output your clients pay for.</p>
+
+    <h2>Why gross margin matters more than revenue</h2>
+
+    <p>An agency billing £500k a year with a 30% gross margin has £150k to cover overhead and generate profit. An agency billing £300k with a 65% gross margin has £195k. The smaller agency has more to work with. This is why revenue comparisons between agencies are almost meaningless without knowing the margin structure underneath.</p>
+
+    <p>Gross margin also determines how much of each new pound of revenue actually flows through to the bottom line. If your margin is 60%, winning a new £10k project should eventually contribute £6k toward overhead and profit. If your margin is 35%, that same project contributes £3,500 — and you'll need to win a lot more of them just to break even on your cost base.</p>
+
+    <h2>Typical gross margin ranges for digital agencies</h2>
+
+    <p>Based on industry benchmarks, here's how digital agency gross margins typically break down:</p>
+
+    <ul>
+      <li><strong>Below 40%</strong> — Danger zone. You are almost certainly over-reliant on contractors, suffering from scope creep, or underpricing your work.</li>
+      <li><strong>40–50%</strong> — Below average. Survivable, but you have little buffer for mistakes, and growth will be painful.</li>
+      <li><strong>50–65%</strong> — Healthy range for most digital agencies. You have enough margin to invest in sales, people, and tooling.</li>
+      <li><strong>65–75%</strong> — Strong. Typically seen in agencies with well-packaged services, retainer-heavy revenue, and tight scope management.</li>
+      <li><strong>Above 75%</strong> — Exceptional. Usually achieved by highly productised services or agencies that have built significant intellectual property into their delivery.</li>
+    </ul>
+
+    <p>The 50–70% band is where most well-run digital agencies sit. If you're consistently below 40%, you're not running an agency — you're running a staffing operation with a brand attached.</p>
+
+    <h2>What pulls your gross margin down</h2>
+
+    <p>Several factors commonly erode agency margins, and understanding them is the first step to fixing them.</p>
+
+    <p><strong>Contractors vs. full-time employees.</strong> Contractors feel flexible, but their day rates often exceed the effective cost of a permanent employee doing the same work. If you're using contractors for core delivery rather than overflow capacity, your margin will suffer. Every contractor invoice hits COGS directly; a salaried employee's cost is more predictable and often lower per productive hour.</p>
+
+    <p><strong>Scope creep.</strong> The single biggest margin killer in agency work. A project quoted at 40 hours that runs to 60 hours hasn't just eaten into profit — it has potentially wiped it out entirely. Scope creep is often invisible on revenue reports, which is exactly why gross margin analysis is so valuable. It shows up in the margin before you notice it anywhere else.</p>
+
+    <p><strong>Project-based vs. retainer work.</strong> Project work carries inherent margin risk because every project requires scoping, onboarding, and knowledge transfer. Retainer work — where a client pays a fixed monthly fee for ongoing services — allows you to optimise delivery over time and reduce the overhead per pound of revenue. Agencies that shift toward retainers typically see gross margin improve by 8–15 percentage points over 12–18 months.</p>
+
+    <h2>The warning sign you can't ignore</h2>
+
+    <div class="callout callout-warning">
+      <p><strong>Below 40% gross margin</strong> means that for every £1 of revenue, you're spending more than 60p just delivering the work — before you've paid for a single thing in your overhead. At that margin, there is no path to a healthy net profit without a fundamental change in how you price or deliver services.</p>
+    </div>
+
+    <p>Agencies in this position often feel busy and even appear to be growing in revenue terms. But the harder they work, the more they lose. If this describes your agency, the problem is structural, not operational — working longer hours won't fix it.</p>
+
+    <h2>How to improve your gross margin</h2>
+
+    <p><strong>Raise your rates.</strong> This sounds obvious but most agencies are underpriced relative to the value they deliver. A 10% rate increase on existing clients, with no change in delivery cost, flows almost entirely into gross margin. If your current margin is 50%, a 10% rate increase can push it to 55–58%.</p>
+
+    <p><strong>Reduce scope creep systematically.</strong> This means tighter contracts, clear change request processes, and project managers who are empowered to say no. Track hours per project religiously and flag any engagement that's running over budget before it becomes a write-off.</p>
+
+    <p><strong>Shift to retainer models.</strong> Identify your best clients and propose fixed-fee monthly arrangements. Frame it around predictability for them — they'll always know what they're spending — but the real benefit for you is that delivery becomes more efficient with each passing month.</p>
+
+    <p><strong>Track margin per client, not just overall.</strong> Your blended gross margin might look acceptable while hiding two or three clients who are destroying your economics. Calculate gross margin at the client level at least quarterly. You may find that your bottom 20% of clients by margin are consuming 40% of your delivery capacity.</p>
+
+    <div class="score-box">
+      <h3>How ScoreMyAgency calculates this <span class="score-badge">15% weight</span></h3>
+      <p>Gross margin is one of six financial ratios in the ScoreMyAgency score. It carries a 15% weight in the overall calculation — meaningful, but secondary to cash flow and concentration metrics that tend to be more immediately existential. We score it on a 0–10 scale, with 10 awarded at 65%+ gross margin. Scores below 40% receive a 0 and trigger a warning flag in the report regardless of overall score.</p>
+    </div>
+
+    <div class="cta-section">
+      <h2>Check your agency's gross margin score — free, no signup, 2 minutes</h2>
+      <p>Enter your revenue and delivery costs and get a scored breakdown across all six financial health ratios.</p>
+      <a href="https://scoremyagency.com" class="btn btn-white">Score my agency →</a>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-top">
+        <div>
+          <div class="footer-brand-logo">Score<em>My</em>Agency</div>
+          <p class="footer-tagline">Free financial health scoring for digital agencies. Know your number in 2 minutes.</p>
+        </div>
+        <div>
+          <div class="footer-col-title">Product</div>
+          <ul class="footer-links">
+            <li><a href="../index.html#how">How it works</a></li>
+            <li><a href="../index.html#ratios">Features</a></li>
+            <li><a href="../index.html#sample">Sample report</a></li>
+            <li><a href="https://scoremyagency.streamlit.app?tool=true">Launch app</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Resources</div>
+          <ul class="footer-links">
+            <li><a href="../index.html#faq">FAQ</a></li>
+            <li><a href="../methodology.html">Methodology</a></li>
+            <li><a href="index.html">Blog</a></li>
+            <li><a href="https://github.com/Nikola-dev-finance/ScoreMyAgency" target="_blank" rel="noopener">GitHub</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Company</div>
+          <ul class="footer-links">
+            <li><a href="mailto:hello@scoremyagency.com">Contact</a></li>
+            <li><a href="../privacy.html">Privacy Policy</a></li>
+            <li><a href="../terms.html">Terms of Use</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">© 2025 ScoreMyAgency. Built by Nikola.</span>
+        <div class="footer-legal">
+          <a href="../privacy.html">Privacy</a>
+          <a href="../terms.html">Terms</a>
+          <a href="mailto:hello@scoremyagency.com">hello@scoremyagency.com</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
