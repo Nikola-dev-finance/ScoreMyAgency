@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ScoreMyAgency — Financial Health Score for Digital Agencies</title>
+  <meta name="description" content="Free financial health scoring tool for digital agencies. Upload your Xero P&L or enter numbers manually. Get a 0–100 score, peer benchmarks, and AI-powered recommendations in under 2 minutes." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Reset & root ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #f8f7f4;
+      --bg-dark:   #0e1117;
+      --surface:   #ffffff;
+      --surface-2: #f1ede8;
+      --border:    #e4ddd5;
+      --muted:     #9b9488;
+      --body:      #4a4540;
+      --heading:   #12100e;
+      --ink:       #1a1714;
+      --teal:      #0f766e;
+      --teal-d:    #0a5e58;
+      --teal-l:    #14b8a6;
+      --teal-bg:   rgba(15,118,110,0.08);
+      --amber:     #d97706;
+      --green:     #16a34a;
+      --red:       #dc2626;
+      --font-serif: 'Instrument Serif', Georgia, serif;
+      --font-sans:  'DM Sans', system-ui, sans-serif;
+      --r:    10px;
+      --r-lg: 16px;
+      --r-xl: 24px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--body);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    h1, h2, h3, h4 { color: var(--heading); font-family: var(--font-serif); line-height: 1.2; font-weight: 400; }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    .hidden { display: none !important; }
+
+    /* ════════════════════════════════════════
+       NAV
+    ════════════════════════════════════════ */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(248,247,244,0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .nav-logo { font-family: var(--font-serif); font-size: 1.15rem; color: var(--ink); }
+    .nav-logo em { font-style: italic; color: var(--teal); }
+
+    .nav-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0.42rem 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      font-size: 0.86rem;
+      font-weight: 500;
+      color: var(--body);
+      transition: border-color 0.15s, box-shadow 0.15s;
+      white-space: nowrap;
+    }
+    .nav-back:hover { border-color: #bbb5ae; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+
+    /* ════════════════════════════════════════
+       MAIN LAYOUT
+    ════════════════════════════════════════ */
+    .tool-wrap {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: 48px 24px 96px;
+    }
+
+    /* ── Page header ── */
+    .page-title {
+      font-size: clamp(1.9rem, 4vw, 2.4rem);
+      margin-bottom: 8px;
+    }
+    .page-title em { font-style: italic; color: var(--teal); }
+
+    .page-subtitle {
+      color: var(--muted);
+      font-size: 1rem;
+      font-weight: 300;
+      margin-bottom: 32px;
+    }
+
+    /* ── Agency name field ── */
+    .field-block { margin-bottom: 28px; }
+    .field-block label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--heading);
+      margin-bottom: 8px;
+    }
+    .field-block .field-hint {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-weight: 400;
+      margin-left: 6px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="number"] {
+      width: 100%;
+      padding: 0.65rem 0.9rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      color: var(--heading);
+      transition: border-color 0.15s, box-shadow 0.15s;
+      outline: none;
+      -webkit-appearance: none;
+    }
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="number"]:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(15,118,110,0.12);
+    }
+    input::placeholder { color: var(--muted); }
+
+    /* Remove number input spinners */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+    input[type="number"] { -moz-appearance: textfield; }
+
+    /* ── Tabs ── */
+    .tabs {
+      display: flex;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 32px;
+      gap: 0;
+    }
+    .tab-btn {
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      padding: 10px 20px;
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .tab-btn:hover { color: var(--body); }
+    .tab-btn.active { color: var(--heading); border-bottom-color: var(--teal); font-weight: 600; }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ── Section headings inside form ── */
+    .section-heading {
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      color: var(--heading);
+      margin: 28px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-heading:first-child { margin-top: 0; }
+
+    /* ── Grid for form inputs ── */
+    .input-grid {
+      display: grid;
+      gap: 16px;
+    }
+    .input-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .input-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+
+    @media (max-width: 600px) {
+      .input-grid.cols-3,
+      .input-grid.cols-2 { grid-template-columns: 1fr; }
+    }
+
+    .input-field label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--body);
+      margin-bottom: 6px;
+    }
+    .input-field .note {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 4px;
+      font-style: italic;
+    }
+
+    /* ── CSV tab ── */
+    .csv-drop {
+      border: 2px dashed var(--border);
+      border-radius: var(--r-lg);
+      padding: 36px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.18s, background 0.18s;
+      background: var(--surface);
+      position: relative;
+    }
+    .csv-drop:hover,
+    .csv-drop.drag-over { border-color: var(--teal); background: var(--teal-bg); }
+    .csv-drop input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+    .csv-drop-icon { font-size: 2rem; margin-bottom: 10px; }
+    .csv-drop p { font-size: 0.9rem; color: var(--muted); margin: 4px 0 0; }
+    .csv-drop .csv-filename {
+      display: inline-block;
+      margin-top: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--teal);
+    }
+    .csv-note {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .csv-note::before { content: '🔒'; font-size: 0.85rem; flex-shrink: 0; }
+
+    .csv-supplementary { margin-top: 28px; }
+
+    /* ── Caption text ── */
+    .form-caption {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    /* ── Primary button ── */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0.82rem 2.2rem;
+      background: var(--teal);
+      color: #fff;
+      border: none;
+      border-radius: var(--r);
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.18s, transform 0.18s, box-shadow 0.18s;
+      box-shadow: 0 1px 3px rgba(15,118,110,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+      width: 100%;
+      margin-top: 28px;
+    }
+    .btn-primary:hover { background: var(--teal-d); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(15,118,110,0.28); }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0.72rem 1.6rem;
+      background: var(--surface);
+      color: var(--body);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .btn-secondary:hover { border-color: #bbb5ae; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+
+    /* ── Error / info banners ── */
+    .banner {
+      padding: 12px 16px;
+      border-radius: var(--r);
+      font-size: 0.875rem;
+      line-height: 1.5;
+      margin: 16px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .banner-error   { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+    .banner-warning { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
+    .banner-success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+
+    /* ════════════════════════════════════════
+       LOADING
+    ════════════════════════════════════════ */
+    .loading-wrap {
+      text-align: center;
+      padding: 56px 24px;
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--teal);
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+      margin: 0 auto 20px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-wrap p { color: var(--muted); font-size: 0.95rem; }
+    .loading-wrap .loading-steps { margin-top: 12px; font-size: 0.82rem; color: var(--muted); }
+
+    /* ════════════════════════════════════════
+       RESULTS
+    ════════════════════════════════════════ */
+    .results-wrap { margin-top: 48px; border-top: 2px solid var(--border); padding-top: 40px; }
+
+    /* Score display */
+    .score-card {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      padding: 24px 28px;
+      border-radius: var(--r-lg);
+      margin-bottom: 20px;
+    }
+    .score-card.healthy  { background: #f0fdf4; border: 1px solid #bbf7d0; }
+    .score-card.caution  { background: #fffbeb; border: 1px solid #fde68a; }
+    .score-card.critical { background: #fef2f2; border: 1px solid #fecaca; }
+
+    .score-number {
+      font-family: var(--font-serif);
+      font-size: 4rem;
+      font-weight: 700;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .score-card.healthy  .score-number { color: #166534; }
+    .score-card.caution  .score-number { color: #92400e; }
+    .score-card.critical .score-number { color: #991b1b; }
+
+    .score-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .score-verdict {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+    }
+    .score-card.healthy  .score-verdict { color: #166534; }
+    .score-card.caution  .score-verdict { color: #92400e; }
+    .score-card.critical .score-verdict { color: #991b1b; }
+
+    /* Diagnosis */
+    .diagnosis {
+      background: var(--surface-2);
+      border-left: 3px solid var(--teal);
+      border-radius: 0 var(--r) var(--r) 0;
+      padding: 12px 16px;
+      font-size: 0.95rem;
+      color: var(--body);
+      margin-bottom: 36px;
+      line-height: 1.6;
+    }
+    .diagnosis strong { color: var(--heading); }
+
+    /* Section header */
+    .results-section-title {
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      color: var(--heading);
+      margin-bottom: 16px;
+      margin-top: 36px;
+    }
+
+    /* Ratio table */
+    .ratio-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+    }
+    .ratio-table th {
+      background: var(--surface-2);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .ratio-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .ratio-table tr:last-child td { border-bottom: none; }
+    .ratio-table tr:hover td { background: #fafaf9; }
+
+    .score-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 48px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .score-pill.good   { background: #dcfce7; color: #166534; }
+    .score-pill.mid    { background: #fef9c3; color: #854d0e; }
+    .score-pill.bad    { background: #fee2e2; color: #991b1b; }
+
+    .pct-badge {
+      font-weight: 600;
+      font-size: 0.82rem;
+    }
+    .pct-badge.good { color: var(--green); }
+    .pct-badge.mid  { color: var(--amber); }
+    .pct-badge.bad  { color: var(--red); }
+
+    .ratio-table .ratio-value { color: var(--body); font-variant-numeric: tabular-nums; }
+
+    .benchmarks-note {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+
+    /* Findings & actions */
+    .finding-card, .action-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 18px 20px;
+      margin-bottom: 12px;
+      font-size: 0.925rem;
+      line-height: 1.7;
+      color: var(--body);
+      display: flex;
+      gap: 14px;
+    }
+    .finding-card { border-left: 3px solid #e4ddd5; }
+    .action-card  { border-left: 3px solid var(--teal); }
+
+    .card-num {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+    .finding-card .card-num { background: var(--surface-2); color: var(--muted); }
+    .action-card  .card-num { background: var(--teal-bg); color: var(--teal); }
+
+    /* PDF download */
+    .pdf-btn-wrap { margin-top: 32px; }
+    .btn-pdf {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0.82rem 2rem;
+      background: var(--teal);
+      color: #fff;
+      border: none;
+      border-radius: var(--r);
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.18s, transform 0.18s, box-shadow 0.18s;
+      box-shadow: 0 1px 3px rgba(15,118,110,0.3);
+      width: 100%;
+    }
+    .btn-pdf:hover { background: var(--teal-d); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(15,118,110,0.28); }
+    .btn-pdf:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+    /* Email capture */
+    .email-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      padding: 28px 24px;
+      margin-top: 36px;
+    }
+    .email-card h3 {
+      font-size: 1.05rem;
+      margin-bottom: 6px;
+    }
+    .email-card p {
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+    .email-row {
+      display: flex;
+      gap: 10px;
+    }
+    .email-row input { flex: 1; }
+    .btn-email {
+      flex-shrink: 0;
+      padding: 0.65rem 1.4rem;
+      background: var(--teal);
+      color: #fff;
+      border: none;
+      border-radius: var(--r);
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+    .btn-email:hover { background: var(--teal-d); }
+
+    @media (max-width: 460px) {
+      .email-row { flex-direction: column; }
+      .btn-email { width: 100%; }
+    }
+
+    .privacy-note {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Rescore button */
+    .rescore-wrap {
+      margin-top: 32px;
+      text-align: center;
+    }
+    .rescore-wrap button {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      color: var(--muted);
+      padding: 0.5rem 1.2rem;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .rescore-wrap button:hover { border-color: #bbb; color: var(--body); }
+
+    /* ════════════════════════════════════════
+       FOOTER
+    ════════════════════════════════════════ */
+    footer {
+      background: var(--bg-dark);
+      border-top: 1px solid #1a2030;
+      padding: 36px 0 28px;
+      margin-top: 0;
+    }
+    .footer-inner {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-logo { font-family: var(--font-serif); font-size: 1rem; color: #e8e4df; }
+    .footer-logo em { font-style: italic; color: var(--teal-l); }
+    .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
+    .footer-links a { font-size: 0.8rem; color: #3e4a5c; transition: color 0.15s; }
+    .footer-links a:hover { color: #8a9ab0; }
+
+    @media (max-width: 520px) {
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+      .score-card { gap: 16px; }
+      .score-number { font-size: 3rem; }
+      .ratio-table th:last-child,
+      .ratio-table td:last-child { display: none; } /* hide percentile on small screens */
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAV ─────────────────────────────────────────────────────────────── -->
+  <nav>
+    <div class="nav-inner">
+      <span class="nav-logo">Score<em>My</em>Agency</span>
+      <a href="index.html" class="nav-back">← Back to home</a>
+    </div>
+  </nav>
+
+  <!-- ── TOOL ─────────────────────────────────────────────────────────────── -->
+  <div class="tool-wrap">
+
+    <h1 class="page-title">Score<em>My</em>Agency</h1>
+    <p class="page-subtitle">Find out if your agency's finances are healthy — in 60 seconds.</p>
+
+    <!-- Agency name -->
+    <div class="field-block">
+      <label for="agency-name">Agency name <span class="field-hint">Used in your report</span></label>
+      <input type="text" id="agency-name" placeholder="e.g. Mosaic Digital" autocomplete="organization" />
+    </div>
+
+    <!-- Error banner -->
+    <div id="error-banner" class="banner banner-error hidden"></div>
+
+    <!-- ── Tabs ── -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="manual">Enter your numbers</button>
+      <button class="tab-btn" data-tab="csv">Upload Xero / QBO CSV</button>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         TAB: MANUAL ENTRY
+    ══════════════════════════════════════ -->
+    <div id="tab-manual" class="tab-content active">
+      <p class="form-caption">Takes about 60 seconds. You'll need: revenue for the last 3 months, total costs, largest client revenue, accounts receivable, cash balance, and headcount.</p>
+
+      <h3 class="section-heading">Revenue (last 3 months)</h3>
+      <div class="input-grid cols-3">
+        <div class="input-field">
+          <label for="rev-current">This month (€)</label>
+          <input type="number" id="rev-current" placeholder="e.g. 42000" min="0" step="100" />
+        </div>
+        <div class="input-field">
+          <label for="rev-1m">Last month (€)</label>
+          <input type="number" id="rev-1m" placeholder="e.g. 38000" min="0" step="100" />
+        </div>
+        <div class="input-field">
+          <label for="rev-3m">3 months ago (€)</label>
+          <input type="number" id="rev-3m" placeholder="e.g. 35000" min="0" step="100" />
+        </div>
+      </div>
+
+      <h3 class="section-heading">Costs</h3>
+      <div class="input-grid cols-2">
+        <div class="input-field">
+          <label for="exp-current">This month's expenses (€)</label>
+          <input type="number" id="exp-current" placeholder="e.g. 28000" min="0" step="100" />
+        </div>
+        <div class="input-field">
+          <label for="exp-3m">3 months ago expenses (€)</label>
+          <input type="number" id="exp-3m" placeholder="e.g. 25000" min="0" step="100" />
+        </div>
+      </div>
+
+      <h3 class="section-heading">Cash &amp; Clients</h3>
+      <div class="input-grid cols-3">
+        <div class="input-field">
+          <label for="cash">Cash balance (€)</label>
+          <input type="number" id="cash" placeholder="e.g. 85000" min="0" step="100" />
+        </div>
+        <div class="input-field">
+          <label for="top-client">Largest client monthly billing (€)</label>
+          <input type="number" id="top-client" placeholder="e.g. 12000" min="0" step="100" />
+        </div>
+        <div class="input-field">
+          <label for="ar">Outstanding invoices / AR (€)</label>
+          <input type="number" id="ar" placeholder="e.g. 18000" min="0" step="100" />
+        </div>
+      </div>
+
+      <h3 class="section-heading">Team &amp; Margins</h3>
+      <div class="input-grid cols-3">
+        <div class="input-field">
+          <label for="employees">Number of employees</label>
+          <input type="number" id="employees" placeholder="e.g. 8" min="1" step="1" />
+        </div>
+        <div class="input-field">
+          <label for="gm-current">Gross margin this month (%)</label>
+          <input type="number" id="gm-current" placeholder="e.g. 52" min="0" max="100" step="0.1" />
+          <p class="note">Revenue minus direct delivery costs ÷ revenue</p>
+        </div>
+        <div class="input-field">
+          <label for="gm-3m">Gross margin 3 months ago (%)</label>
+          <input type="number" id="gm-3m" placeholder="e.g. 48" min="0" max="100" step="0.1" />
+        </div>
+      </div>
+
+      <button class="btn-primary" id="btn-score-manual">Score My Agency →</button>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         TAB: CSV UPLOAD
+    ══════════════════════════════════════ -->
+    <div id="tab-csv" class="tab-content">
+
+      <div class="csv-drop" id="csv-drop">
+        <input type="file" id="csv-file" accept=".csv" />
+        <div class="csv-drop-icon">📄</div>
+        <strong>Drop your CSV here, or click to browse</strong>
+        <p>Profit &amp; Loss export from Xero or QuickBooks Online</p>
+        <span class="csv-filename hidden" id="csv-filename"></span>
+      </div>
+      <p class="csv-note">Your raw financial data is processed in real-time and never stored on our servers.</p>
+
+      <!-- Fields always needed — P&L doesn't contain these -->
+      <div class="csv-supplementary">
+        <h3 class="section-heading">A few numbers we can't get from the P&amp;L</h3>
+        <p class="form-caption">These live outside a standard Profit &amp; Loss report. Add them manually and we'll combine everything into your score.</p>
+
+        <div class="input-grid cols-2" style="margin-bottom:16px;">
+          <div class="input-field">
+            <label for="csv-cash">Cash balance (€)</label>
+            <input type="number" id="csv-cash" placeholder="e.g. 85000" min="0" step="100" />
+          </div>
+          <div class="input-field">
+            <label for="csv-top-client">Largest client monthly billing (€)</label>
+            <input type="number" id="csv-top-client" placeholder="e.g. 12000" min="0" step="100" />
+          </div>
+          <div class="input-field">
+            <label for="csv-ar">Outstanding invoices / AR (€)</label>
+            <input type="number" id="csv-ar" placeholder="e.g. 18000" min="0" step="100" />
+          </div>
+          <div class="input-field">
+            <label for="csv-employees">Number of employees</label>
+            <input type="number" id="csv-employees" placeholder="e.g. 8" min="1" step="1" />
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="btn-score-csv">Score My Agency →</button>
+    </div>
+
+    <!-- ── Loading ─────────────────────────────────────────────────────────── -->
+    <div id="loading" class="hidden">
+      <div class="loading-wrap">
+        <div class="spinner"></div>
+        <p id="loading-msg">Analysing your financials…</p>
+        <p class="loading-steps" id="loading-steps"></p>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         RESULTS
+    ══════════════════════════════════════ -->
+    <div id="results" class="results-wrap hidden">
+
+      <!-- Score card -->
+      <div id="score-card" class="score-card">
+        <div class="score-number" id="score-number">—</div>
+        <div>
+          <div class="score-label">Financial Health Score</div>
+          <div class="score-verdict" id="score-verdict">—</div>
+        </div>
+      </div>
+
+      <!-- Diagnosis -->
+      <div id="diagnosis" class="diagnosis hidden">
+        <strong>Diagnosis:</strong> <span id="diagnosis-text"></span>
+      </div>
+
+      <!-- Ratio table -->
+      <h2 class="results-section-title">Ratio Breakdown</h2>
+      <table class="ratio-table">
+        <thead>
+          <tr>
+            <th>Ratio</th>
+            <th>Score</th>
+            <th>Value</th>
+            <th>Peer percentile</th>
+          </tr>
+        </thead>
+        <tbody id="ratio-tbody"></tbody>
+      </table>
+      <p class="benchmarks-note">Based on agency benchmark data. Percentiles become more precise as more agencies use the tool.</p>
+
+      <!-- Findings -->
+      <h2 class="results-section-title">Key Findings</h2>
+      <div id="findings-list"></div>
+
+      <!-- Actions -->
+      <h2 class="results-section-title">Recommended Actions</h2>
+      <div id="actions-list"></div>
+
+      <!-- PDF download -->
+      <div class="pdf-btn-wrap">
+        <button class="btn-pdf" id="btn-pdf">
+          <span>📥</span> Download PDF Report
+        </button>
+        <div id="pdf-error" class="banner banner-error hidden" style="margin-top:10px;"></div>
+      </div>
+
+      <!-- Email capture -->
+      <div class="email-card">
+        <h3>Want this report automatically every month?</h3>
+        <p>We'll email you an updated score each month so you can track your progress over time.</p>
+        <div id="email-form">
+          <div class="email-row">
+            <input type="email" id="email-input" placeholder="you@youragency.com" />
+            <button class="btn-email" id="btn-email">Join waitlist</button>
+          </div>
+          <div id="email-error" class="banner banner-error hidden" style="margin-top:8px;"></div>
+        </div>
+        <div id="email-success" class="banner banner-success hidden" style="margin-top:8px;">
+          You're on the list — we'll be in touch.
+        </div>
+        <p class="privacy-note">🔒 Your raw financial data is never stored.</p>
+      </div>
+
+      <!-- Rescore -->
+      <div class="rescore-wrap">
+        <button id="btn-rescore">← Score a different agency</button>
+      </div>
+
+    </div>
+    <!-- /results -->
+
+  </div>
+  <!-- /tool-wrap -->
+
+  <!-- ── FOOTER ─────────────────────────────────────────────────────────── -->
+  <footer>
+    <div class="footer-inner">
+      <span class="footer-logo">Score<em>My</em>Agency</span>
+      <nav class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="methodology.html">Methodology</a>
+        <a href="blog/index.html">Blog</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="mailto:hello@scoremyagency.com">Contact</a>
+      </nav>
+    </div>
+  </footer>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       JAVASCRIPT
+  ══════════════════════════════════════════════════════════════════════ -->
+  <script>
+    'use strict';
+
+    /* ── Config ──────────────────────────────────────────────────────────── */
+    const API_BASE_URL = 'https://scoremyagency-api.onrender.com';
+
+    /* ── State ───────────────────────────────────────────────────────────── */
+    let _lastResult = null; // holds the most recent API response for PDF download
+
+    /* ── Helpers ─────────────────────────────────────────────────────────── */
+    const $ = id => document.getElementById(id);
+
+    function show(id)  { $(id).classList.remove('hidden'); }
+    function hide(id)  { $(id).classList.add('hidden'); }
+    function setText(id, text) { $(id).textContent = text; }
+
+    function showError(id, msg) {
+      const el = $(id);
+      el.textContent = msg;
+      el.classList.remove('hidden');
+    }
+    function clearError(id) { $(id).classList.add('hidden'); $(id).textContent = ''; }
+
+    function val(id) {
+      const el = $(id);
+      if (!el) return '';
+      return el.value.trim();
+    }
+    function numVal(id) {
+      const v = parseFloat($(id).value);
+      return isNaN(v) ? null : v;
+    }
+
+    /* ── Tab switching ───────────────────────────────────────────────────── */
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        $('tab-' + btn.dataset.tab).classList.add('active');
+        clearError('error-banner');
+      });
+    });
+
+    /* ── CSV drag & drop ─────────────────────────────────────────────────── */
+    const csvDrop = $('csv-drop');
+    const csvFile = $('csv-file');
+
+    ['dragenter', 'dragover'].forEach(evt => {
+      csvDrop.addEventListener(evt, e => { e.preventDefault(); csvDrop.classList.add('drag-over'); });
+    });
+    ['dragleave', 'drop'].forEach(evt => {
+      csvDrop.addEventListener(evt, e => { e.preventDefault(); csvDrop.classList.remove('drag-over'); });
+    });
+    csvDrop.addEventListener('drop', e => {
+      const files = e.dataTransfer.files;
+      if (files.length) {
+        csvFile.files = files; // set file input
+        updateCsvFilename(files[0].name);
+      }
+    });
+    csvFile.addEventListener('change', () => {
+      if (csvFile.files.length) updateCsvFilename(csvFile.files[0].name);
+    });
+    function updateCsvFilename(name) {
+      const el = $('csv-filename');
+      el.textContent = '✓ ' + name;
+      el.classList.remove('hidden');
+    }
+
+    /* ── Loading state ───────────────────────────────────────────────────── */
+    function setLoading(on, msg) {
+      if (on) {
+        hide('results');
+        hide('tab-manual');
+        hide('tab-csv');
+        document.querySelectorAll('.tabs').forEach(t => t.style.display = 'none');
+        $('agency-name').disabled = true;
+        clearError('error-banner');
+        setText('loading-msg', msg || 'Analysing your financials…');
+        setText('loading-steps', '');
+        show('loading');
+
+        // Animate loading message to reassure user during API call
+        const steps = [
+          'Calculating financial ratios…',
+          'Comparing against peer agencies…',
+          'Generating AI interpretation…',
+          'Building your report…',
+        ];
+        let i = 0;
+        window._loadingTimer = setInterval(() => {
+          setText('loading-steps', steps[i % steps.length]);
+          i++;
+        }, 2800);
+      } else {
+        clearInterval(window._loadingTimer);
+        hide('loading');
+        document.querySelectorAll('.tabs').forEach(t => t.style.display = '');
+        show('tab-' + activeTab());
+        $('agency-name').disabled = false;
+      }
+    }
+
+    function activeTab() {
+      const btn = document.querySelector('.tab-btn.active');
+      return btn ? btn.dataset.tab : 'manual';
+    }
+
+    /* ── Validation ──────────────────────────────────────────────────────── */
+    function validateManual() {
+      const name = val('agency-name');
+      if (!name) return 'Please enter your agency name.';
+      if (!numVal('rev-current') || numVal('rev-current') <= 0) return 'This month\'s revenue is required.';
+      if (!numVal('exp-current') || numVal('exp-current') <= 0) return 'This month\'s expenses are required.';
+      if (!numVal('employees')   || numVal('employees')   <  1) return 'Number of employees is required (minimum 1).';
+      if (!numVal('cash')        || numVal('cash')        <= 0) return 'Cash balance is required.';
+      if (!numVal('top-client')  || numVal('top-client')  <= 0) return 'Largest client billing is required.';
+      if (!numVal('ar')          || numVal('ar')          <= 0) return 'Outstanding invoices (AR) is required.';
+      return null;
+    }
+
+    function validateCsv() {
+      const name = val('agency-name');
+      if (!name) return 'Please enter your agency name.';
+      if (!csvFile.files.length) return 'Please select a CSV file.';
+      if (!numVal('csv-employees') || numVal('csv-employees') < 1) return 'Number of employees is required.';
+      if (!numVal('csv-cash')      || numVal('csv-cash')     <= 0) return 'Cash balance is required.';
+      if (!numVal('csv-top-client')|| numVal('csv-top-client') <= 0) return 'Largest client billing is required.';
+      if (!numVal('csv-ar')        || numVal('csv-ar')       <= 0) return 'Outstanding invoices (AR) is required.';
+      return null;
+    }
+
+    /* ── Manual score ────────────────────────────────────────────────────── */
+    $('btn-score-manual').addEventListener('click', async () => {
+      clearError('error-banner');
+      const err = validateManual();
+      if (err) { showError('error-banner', err); return; }
+
+      const payload = {
+        name:                val('agency-name'),
+        revenue_current:     numVal('rev-current'),
+        revenue_1m_ago:      numVal('rev-1m')       ?? 0,
+        revenue_3m_ago:      numVal('rev-3m')       ?? 0,
+        expenses_current:    numVal('exp-current'),
+        expenses_3m_ago:     numVal('exp-3m')       ?? 0,
+        cash_balance:        numVal('cash'),
+        top_client_revenue:  numVal('top-client'),
+        accounts_receivable: numVal('ar'),
+        num_employees:       numVal('employees'),
+        gross_margin_current: (numVal('gm-current') ?? 0) / 100,
+        gross_margin_3m_ago:  (numVal('gm-3m')      ?? 0) / 100,
+      };
+
+      setLoading(true, 'Analysing your financials…');
+      try {
+        const res = await fetch(API_BASE_URL + '/api/score', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Scoring failed.');
+        setLoading(false);
+        renderResults(data);
+      } catch (e) {
+        setLoading(false);
+        showError('error-banner', e.message || 'Something went wrong. Please try again.');
+      }
+    });
+
+    /* ── CSV score ───────────────────────────────────────────────────────── */
+    $('btn-score-csv').addEventListener('click', async () => {
+      clearError('error-banner');
+      const err = validateCsv();
+      if (err) { showError('error-banner', err); return; }
+
+      const fd = new FormData();
+      fd.append('file', csvFile.files[0]);
+      fd.append('name',             val('agency-name'));
+      fd.append('cash_balance',     numVal('csv-cash'));
+      fd.append('top_client_revenue', numVal('csv-top-client'));
+      fd.append('accounts_receivable', numVal('csv-ar'));
+      fd.append('num_employees',    numVal('csv-employees'));
+
+      setLoading(true, 'Parsing your CSV…');
+      try {
+        const res = await fetch(API_BASE_URL + '/api/upload-csv', {
+          method: 'POST',
+          body: fd,
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Upload failed.');
+        setLoading(false);
+        renderResults(data);
+      } catch (e) {
+        setLoading(false);
+        showError('error-banner', e.message || 'Something went wrong. Please try again.');
+      }
+    });
+
+    /* ── Render results ──────────────────────────────────────────────────── */
+    function renderResults(data) {
+      _lastResult = data;
+      const score = data.score;
+      const card  = $('score-card');
+
+      // Score card colour
+      card.classList.remove('healthy', 'caution', 'critical');
+      let verdict;
+      if (score >= 70) { card.classList.add('healthy');  verdict = 'Healthy'; }
+      else if (score >= 40) { card.classList.add('caution');  verdict = 'Struggling'; }
+      else                  { card.classList.add('critical'); verdict = 'Critical'; }
+
+      setText('score-number', score);
+      setText('score-verdict', verdict);
+
+      // Diagnosis
+      if (data.risk_summary) {
+        setText('diagnosis-text', data.risk_summary);
+        show('diagnosis');
+      } else {
+        hide('diagnosis');
+      }
+
+      // Ratio table
+      renderRatioTable(data.scores, data.ratios, data.percentiles);
+
+      // Findings
+      const findingsEl = $('findings-list');
+      findingsEl.innerHTML = '';
+      (data.findings || []).forEach((f, i) => {
+        const div = document.createElement('div');
+        div.className = 'finding-card';
+        div.innerHTML = `<div class="card-num">${i + 1}</div><div>${escHtml(f)}</div>`;
+        findingsEl.appendChild(div);
+      });
+
+      // Actions
+      const actionsEl = $('actions-list');
+      actionsEl.innerHTML = '';
+      (data.actions || []).forEach((a, i) => {
+        const div = document.createElement('div');
+        div.className = 'action-card';
+        div.innerHTML = `<div class="card-num">${i + 1}</div><div>${escHtml(a)}</div>`;
+        actionsEl.appendChild(div);
+      });
+
+      // Reset email form state
+      hide('email-success');
+      show('email-form');
+      clearError('email-error');
+      $('email-input').value = '';
+
+      // Reset PDF button
+      $('btn-pdf').disabled = false;
+      $('btn-pdf').innerHTML = '<span>📥</span> Download PDF Report';
+      clearError('pdf-error');
+
+      show('results');
+      // Smooth scroll to results
+      $('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function renderRatioTable(scores, ratios, percentiles) {
+      const tbody = $('ratio-tbody');
+      tbody.innerHTML = '';
+
+      const rows = [
+        { key: 'revenue_concentration', label: 'Revenue Concentration',     fmt: v => (v * 100).toFixed(1) + '%' },
+        { key: 'dso',                   label: 'Days Sales Outstanding',    fmt: v => v.toFixed(1) + ' days',
+          ratioKey: 'dso' },
+        { key: 'cash_runway',           label: 'Cash Runway',               fmt: v => v.toFixed(1) + ' months' },
+        { key: 'gross_margin',          label: 'Gross Margin',              fmt: v => (v * 100).toFixed(1) + '%',
+          ratioKey: 'gross_margin_current' },
+        { key: 'exp_vs_rev',            label: 'Expense vs Revenue Growth', fmt: v => (v * 100).toFixed(1) + '%' },
+        { key: 'rev_per_employee',      label: 'Revenue per Employee',      fmt: v => '€' + Math.round(v).toLocaleString('en') },
+      ];
+
+      rows.forEach(row => {
+        const rawScore = scores[row.key] ?? 0;
+        const ratioKey = row.ratioKey || row.key;
+        const ratioVal = ratios[ratioKey] ?? 0;
+        const pct      = (percentiles || {})[row.key] ?? 50;
+
+        const scoreClass = rawScore >= 7 ? 'good' : rawScore >= 5 ? 'mid' : 'bad';
+        const pctClass   = pct >= 60 ? 'good' : pct >= 35 ? 'mid' : 'bad';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${escHtml(row.label)}</td>
+          <td><span class="score-pill ${scoreClass}">${rawScore}/10</span></td>
+          <td class="ratio-value">${escHtml(row.fmt(ratioVal))}</td>
+          <td><span class="pct-badge ${pctClass}">Top ${pct}%</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    /* ── PDF download ────────────────────────────────────────────────────── */
+    $('btn-pdf').addEventListener('click', async () => {
+      if (!_lastResult) return;
+      clearError('pdf-error');
+      const btn = $('btn-pdf');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner" style="width:18px;height:18px;border-width:2px;display:inline-block;margin-right:8px;vertical-align:middle;"></span> Generating PDF…';
+
+      try {
+        const res = await fetch(API_BASE_URL + '/api/generate-pdf', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(_lastResult),
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({ error: 'PDF generation failed.' }));
+          throw new Error(err.error || 'PDF generation failed.');
+        }
+
+        const blob = await res.blob();
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        const safeName = (_lastResult.business_name || 'Agency').replace(/[^a-z0-9 _-]/gi, '_');
+        a.href     = url;
+        a.download = safeName + '_ScoreMyAgency.pdf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        btn.innerHTML = '<span>✓</span> Downloaded';
+        setTimeout(() => {
+          btn.innerHTML = '<span>📥</span> Download PDF Report';
+          btn.disabled = false;
+        }, 3000);
+      } catch (e) {
+        btn.innerHTML = '<span>📥</span> Download PDF Report';
+        btn.disabled = false;
+        showError('pdf-error', e.message || 'Could not generate PDF. Please try again.');
+      }
+    });
+
+    /* ── Email capture ───────────────────────────────────────────────────── */
+    $('btn-email').addEventListener('click', async () => {
+      clearError('email-error');
+      const email = val('email-input');
+      if (!email || !email.includes('@')) {
+        showError('email-error', 'Please enter a valid email address.');
+        return;
+      }
+
+      $('btn-email').disabled = true;
+      $('btn-email').textContent = 'Joining…';
+
+      try {
+        const res = await fetch(API_BASE_URL + '/api/waitlist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email,
+            business_name: val('agency-name') || (_lastResult && _lastResult.business_name) || '',
+            score: _lastResult ? _lastResult.score : 0,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Could not save email.');
+
+        hide('email-form');
+        show('email-success');
+      } catch (e) {
+        $('btn-email').disabled = false;
+        $('btn-email').textContent = 'Join waitlist';
+        showError('email-error', e.message || 'Something went wrong. Please try again.');
+      }
+    });
+
+    /* ── Rescore ─────────────────────────────────────────────────────────── */
+    $('btn-rescore').addEventListener('click', () => {
+      hide('results');
+      _lastResult = null;
+      show('tab-' + activeTab());
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    /* ── Escape HTML ─────────────────────────────────────────────────────── */
+    function escHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+  </script>
+
+</body>
+</html>
