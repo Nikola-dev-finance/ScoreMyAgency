@@ -3,3 +3,6 @@ flask-cors
 anthropic
 reportlab
 gunicorn
+pandas
+openpyxl
+python-dotenv
