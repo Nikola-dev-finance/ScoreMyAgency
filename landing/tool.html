@@ -611,27 +611,66 @@
     footer {
       background: var(--bg-dark);
       border-top: 1px solid #1a2030;
-      padding: 36px 0 28px;
-      margin-top: 0;
+      padding: 56px 0 36px;
     }
-    .footer-inner {
-      max-width: 840px;
-      margin: 0 auto;
-      padding: 0 24px;
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 48px;
+    }
+    .footer-brand-logo {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      color: #e8e4df;
+      margin-bottom: 12px;
+    }
+    .footer-brand-logo em { font-style: italic; color: var(--teal-l); }
+    .footer-tagline {
+      font-size: 0.83rem;
+      color: #3e4a5c;
+      line-height: 1.65;
+      font-weight: 300;
+      max-width: 220px;
+    }
+    .footer-col-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #3e4a5c;
+      margin-bottom: 16px;
+    }
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .footer-links a {
+      font-size: 0.84rem;
+      color: #3e4a5c;
+      transition: color 0.15s;
+    }
+    .footer-links a:hover { color: #8a9ab0; }
+    .footer-bottom {
+      border-top: 1px solid #1a2030;
+      padding-top: 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 12px;
     }
-    .footer-logo { font-family: var(--font-serif); font-size: 1rem; color: #e8e4df; }
-    .footer-logo em { font-style: italic; color: var(--teal-l); }
-    .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
-    .footer-links a { font-size: 0.8rem; color: #3e4a5c; transition: color 0.15s; }
-    .footer-links a:hover { color: #8a9ab0; }
+    .footer-copy { font-size: 0.78rem; color: #2e3748; }
+    .footer-legal { display: flex; gap: 20px; }
+    .footer-legal a { font-size: 0.78rem; color: #2e3748; transition: color 0.15s; }
+    .footer-legal a:hover { color: #5a6478; }
 
+    @media (max-width: 960px) { .footer-top { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 520px) {
-      .footer-inner { flex-direction: column; align-items: flex-start; }
+      .footer-top { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; text-align: center; }
       .score-card { gap: 16px; }
       .score-number { font-size: 3rem; }
       .ratio-table th:last-child,
@@ -855,7 +894,7 @@
         <div id="email-success" class="banner banner-success hidden" style="margin-top:8px;">
           You're on the list — we'll be in touch.
         </div>
-        <p class="privacy-note">🔒 Your raw financial data is never stored.</p>
+        <p class="privacy-note">🔒 Your raw financial data is never stored. Only anonymized ratios power the benchmarks.</p>
       </div>
 
       <!-- Rescore -->
@@ -869,17 +908,49 @@
   </div>
   <!-- /tool-wrap -->
 
-  <!-- ── FOOTER ─────────────────────────────────────────────────────────── -->
+  <!-- ── FOOTER ──────────────────────────────────────────────────────────── -->
   <footer>
-    <div class="footer-inner">
-      <span class="footer-logo">Score<em>My</em>Agency</span>
-      <nav class="footer-links">
-        <a href="index.html">Home</a>
-        <a href="methodology.html">Methodology</a>
-        <a href="blog/index.html">Blog</a>
-        <a href="privacy.html">Privacy</a>
-        <a href="mailto:hello@scoremyagency.com">Contact</a>
-      </nav>
+    <div class="container">
+      <div class="footer-top">
+        <div>
+          <div class="footer-brand-logo">Score<em>My</em>Agency</div>
+          <p class="footer-tagline">Free financial health scoring for digital agencies. Know your number in 2 minutes.</p>
+        </div>
+        <div>
+          <div class="footer-col-title">Product</div>
+          <ul class="footer-links">
+            <li><a href="index.html#how">How it works</a></li>
+            <li><a href="index.html#ratios">Features</a></li>
+            <li><a href="index.html#sample">Sample report</a></li>
+            <li><a href="tool.html">Launch app</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Resources</div>
+          <ul class="footer-links">
+            <li><a href="index.html#faq">FAQ</a></li>
+            <li><a href="methodology.html">Methodology</a></li>
+            <li><a href="blog/index.html">Blog</a></li>
+            <li><a href="https://github.com/Nikola-dev-finance/ScoreMyAgency" target="_blank" rel="noopener">GitHub</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Company</div>
+          <ul class="footer-links">
+            <li><a href="mailto:hello@scoremyagency.com">Contact</a></li>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Use</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">© 2025 ScoreMyAgency. Built by Nikola.</span>
+        <div class="footer-legal">
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+          <a href="mailto:hello@scoremyagency.com">hello@scoremyagency.com</a>
+        </div>
+      </div>
     </div>
   </footer>
 
